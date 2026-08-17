@@ -18,7 +18,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-
+import Payment from "./pages/Payment/Payment";
 export default function App() {
   return (
     <>
@@ -31,6 +31,9 @@ export default function App() {
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
+             <Route path="/Payment" element={<Payment />} />
+
+            Payment
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
 
@@ -54,8 +57,8 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/" element={<Navigate to="/signin" replace />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/" element={<Navigate to="/Login" replace />} />
+          <Route path="/Login" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
 
           {/* Fallback Route */}
