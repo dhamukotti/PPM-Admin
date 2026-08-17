@@ -1,182 +1,495 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
+import {
+  Box,
+  TextField,
+  MenuItem,
+  Checkbox,
+  Autocomplete,
+  FormControlLabel,
+  FormControl,
+  FormHelperText,
+  Typography,
+  InputAdornment,
+  IconButton,
+  Divider,
+} from "@mui/material";
+import { EyeCloseIcon, EyeIcon } from "../../icons";
+
+// Shared professional styling for every MUI TextField in this form.
+// Uses currentColor / inherit so it follows Tailwind's dark: text color
+// on the wrapping element instead of MUI's palette.mode.
+const textFieldSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "0.5rem",
+    backgroundColor: "transparent",
+    color: "inherit",
+    "& fieldset": {
+      borderColor: "rgba(148, 163, 184, 0.35)", // slate-400/35
+    },
+    "&:hover fieldset": {
+      borderColor: "rgba(148, 163, 184, 0.6)",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#1878b1",
+      borderWidth: "1.5px",
+    },
+  },
+  "& .MuiInputLabel-root": {
+    color: "inherit",
+    opacity: 0.6,
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    color: "#1878b1",
+    opacity: 1,
+  },
+  "& .MuiInputBase-input": {
+    color: "inherit",
+    padding: "10px 14px",
+    fontSize: "0.875rem",
+  },
+  "& .MuiInputBase-input::placeholder": {
+    opacity: 0.45,
+  },
+};
+
+// TEMP placeholder — replace with your real country source (API/context).
+// Shape matches your Autocomplete renderOption (ID, Name, Code).
+interface Country {
+  ID: string | number;
+  Name: string;
+  Code: string;
+}
+
+const countryList: Country[] = [
+  { ID: 1, Name: "India", Code: "IN" },
+  { ID: 2, Name: "United States", Code: "US" },
+  { ID: 3, Name: "United Kingdom", Code: "GB" },
+  { ID: 4, Name: "Australia", Code: "AU" },
+  { ID: 5, Name: "Germany", Code: "DE" },
+];
+
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+  orgName: string;
+  orgSize: string;
+}
+
+interface SignUpFormErrors {
+  name?: string;
+  email?: string;
+  password?: string;
+  terms?: string;
+  orgName?: string;
+  orgSize?: string;
+  country?: string;
+}
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  // Form control state — tracks field values and validation errors
+  // without touching any of the existing UI logic above.
+  const [formData, setFormData] = useState<SignUpFormData>({
+    name: "",
+    email: "",
+    password: "",
+    orgName: "",
+    orgSize: "",
+  });
+  const [country, setCountry] = useState<Country | null>(null);
+  const [errors, setErrors] = useState<SignUpFormErrors>({});
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof SignUpFormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleCountryChange = (_: unknown, newValue: Country | null) => {
+    setCountry(newValue);
+    if (errors.country) {
+      setErrors((prev) => ({ ...prev, country: "" }));
+    }
+  };
+
+  const validate = () => {
+    const newErrors: SignUpFormErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    if (!country) {
+      newErrors.country = "Please select a country";
+    }
+    if (!formData.orgName.trim()) {
+      newErrors.orgName = "Organization name is required";
+    }
+    if (!formData.orgSize) {
+      newErrors.orgSize = "Please select organization size";
+    }
+    if (!isChecked) {
+      newErrors.terms = "You must accept the Terms and Conditions";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validate()) return;
+    // Validation passed — hook up your submit/signup call here.
+  };
+
   return (
-    <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
-      <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
-        <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+    <div className="relative flex flex-col flex-1 w-full overflow-x-hidden overflow-y-auto lg:w-1/2 no-scrollbar bg-gray-50 dark:bg-gray-950">
+      <style>{`
+        @keyframes signin-fade-up {
+          0% { opacity: 0; transform: translateY(14px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes signin-blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -20px) scale(1.08); }
+          66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+        .signin-animate {
+          opacity: 0;
+          animation: signin-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .signin-blob {
+          animation: signin-blob 12s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .signin-animate { opacity: 1; animation: none; }
+          .signin-blob { animation: none; }
+        }
+      `}</style>
+
+      {/* Ambient background accents */}
+      <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full signin-blob bg-brand-500/10 blur-3xl pointer-events-none" />
+      <div
+        className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full signin-blob bg-brand-500/10 blur-3xl pointer-events-none"
+        style={{ animationDelay: "3s" }}
+      />
+
+      <div className="relative z-10 flex flex-col justify-center flex-1 w-full max-w-2xl px-4 py-10 mx-auto">
+        <div
+          className="w-full p-12 transition-shadow duration-300 bg-white border border-gray-100 shadow-xl signin-animate rounded-2xl dark:border-gray-800 dark:bg-gray-900 sm:p-16 hover:shadow-2xl text-gray-800 dark:text-white/90"
+          style={{ animationDelay: "0.05s" }}
         >
-          <ChevronLeftIcon className="size-5" />
-          Back to dashboard
-        </Link>
-      </div>
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign Up
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
-            </p>
-          </div>
           <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18.7511 10.1944C18.7511 9.47495 18.6915 8.94995 18.5626 8.40552H10.1797V11.6527H15.1003C15.0011 12.4597 14.4654 13.675 13.2749 14.4916L13.2582 14.6003L15.9087 16.6126L16.0924 16.6305C17.7788 15.1041 18.7511 12.8583 18.7511 10.1944Z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M10.1788 18.75C12.5895 18.75 14.6133 17.9722 16.0915 16.6305L13.274 14.4916C12.5201 15.0068 11.5081 15.3666 10.1788 15.3666C7.81773 15.3666 5.81379 13.8402 5.09944 11.7305L4.99473 11.7392L2.23868 13.8295L2.20264 13.9277C3.67087 16.786 6.68674 18.75 10.1788 18.75Z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.10014 11.7305C4.91165 11.186 4.80257 10.6027 4.80257 9.99992C4.80257 9.3971 4.91165 8.81379 5.09022 8.26935L5.08523 8.1534L2.29464 6.02954L2.20333 6.0721C1.5982 7.25823 1.25098 8.5902 1.25098 9.99992C1.25098 11.4096 1.5982 12.7415 2.20333 13.9277L5.10014 11.7305Z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M10.1789 4.63331C11.8554 4.63331 12.9864 5.34303 13.6312 5.93612L16.1511 3.525C14.6035 2.11528 12.5895 1.25 10.1789 1.25C6.68676 1.25 3.67088 3.21387 2.20264 6.07218L5.08953 8.26943C5.81381 6.15972 7.81776 4.63331 10.1789 4.63331Z"
-                    fill="#EB4335"
-                  />
-                </svg>
-                Sign up with Google
-              </button>
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
-                <svg
-                  width="21"
-                  className="fill-current"
-                  height="20"
-                  viewBox="0 0 21 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
-                </svg>
-                Sign up with X
-              </button>
+            <div
+              className="flex flex-col items-center mb-8 text-center signin-animate"
+              style={{ animationDelay: "0.12s" }}
+            >
+              <img
+                src="/images/logo/logo-pp.png"
+                alt="Logo"
+                className="object-contain w-auto h-12 mb-6 sm:h-14"
+              />
             </div>
-            <div className="relative py-3 sm:py-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">
-                  Or
-                </span>
-              </div>
+
+            <div>
+              <p className="text-lg font-semibold text-center text-gray-800 dark:text-white/90 sm:text-xl">
+A Warm welcome
+              </p>
+              <p className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">
+to the new era of the project management application
+
+              </p>
             </div>
-            <form>
-              <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Enter your first name"
-                    />
-                  </div>
-                  {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="lname"
-                      name="lname"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
-                </div>
-                {/* <!-- Email --> */}
-                <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    type="email"
+            <Box component="form" noValidate onSubmit={handleSubmit}>
+              {/* Name */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.24s" }}
+                sx={{ mt: 3 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.name)}>
+                  <TextField
+                    id="name"
+                    name="name"
+                    label="Name"
+                    placeholder="Enter your full name"
+                    required
+                    fullWidth
+                    size="small"
+                    value={formData.name}
+                    onChange={handleChange}
+                    error={Boolean(errors.name)}
+                    sx={textFieldSx}
+                  />
+                  {errors.name && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.name}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Email */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.3s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.email)}>
+                  <TextField
                     id="email"
                     name="email"
+                    type="email"
+                    label="Email"
                     placeholder="Enter your email"
+                    required
+                    fullWidth
+                    size="small"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={Boolean(errors.email)}
+                    sx={textFieldSx}
                   />
-                </div>
-                {/* <!-- Password --> */}
-                <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                    >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-                      )}
-                    </span>
-                  </div>
-                </div>
-                {/* <!-- Checkbox --> */}
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    className="w-5 h-5"
-                    checked={isChecked}
-                    onChange={setIsChecked}
-                  />
-                  <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
-                    By creating an account means you agree to the{" "}
-                    <span className="text-gray-800 dark:text-white/90">
-                      Terms and Conditions,
-                    </span>{" "}
-                    and our{" "}
-                    <span className="text-gray-800 dark:text-white">
-                      Privacy Policy
-                    </span>
-                  </p>
-                </div>
-                {/* <!-- Button --> */}
-                <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
-                  </button>
-                </div>
-              </div>
-            </form>
+                  {errors.email && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.email}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
 
-            <div className="mt-5">
+              {/* Password */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.36s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.password)}>
+                  <TextField
+                    id="password"
+                    name="password"
+                    label="Password"
+                    placeholder="Enter your password"
+                    required
+                    fullWidth
+                    size="small"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={Boolean(errors.password)}
+                    sx={textFieldSx}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                            size="small"
+                          >
+                            {showPassword ? (
+                              <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                            ) : (
+                              <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  {errors.password && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.password}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Country */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.4s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.country)}>
+                  <Autocomplete
+                    size="small"
+                    value={country}
+                    onChange={handleCountryChange}
+                    options={countryList}
+                    isOptionEqualToValue={(row, value) => row.ID === value?.ID}
+                    getOptionLabel={(row) => row.Name || ""}
+                    renderOption={(props, option) => (
+                      <Box component="li" {...props} key={option.ID}>
+                        <img
+                          key={option.Code}
+                          className="mie-4 flex-shrink-0"
+                          alt=""
+                          width="20"
+                          loading="lazy"
+                          src={`https://flagcdn.com/w20/${option.Code.toLowerCase()}.png`}
+                          srcSet={`https://flagcdn.com/w40/${option.Code.toLowerCase()}.png 2x`}
+                          style={{ marginRight: 8 }}
+                        />
+                        {option.Name} ({option.Code})
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Country"
+                        required
+                        error={Boolean(errors.country)}
+                        sx={textFieldSx}
+                      />
+                    )}
+                  />
+                  {errors.country && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.country}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Organization Name */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.44s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.orgName)}>
+                  <TextField
+                    id="orgName"
+                    name="orgName"
+                    label="Organization Name"
+                    placeholder="Enter your organization name"
+                    required
+                    fullWidth
+                    size="small"
+                    value={formData.orgName}
+                    onChange={handleChange}
+                    error={Boolean(errors.orgName)}
+                    sx={textFieldSx}
+                  />
+                  {errors.orgName && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.orgName}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Organization Size */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.48s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl fullWidth error={Boolean(errors.orgSize)}>
+                  <TextField
+                    id="orgSize"
+                    name="orgSize"
+                    select
+                    label="Organization Size"
+                    required
+                    fullWidth
+                    size="small"
+                    value={formData.orgSize}
+                    onChange={handleChange}
+                    error={Boolean(errors.orgSize)}
+                    sx={textFieldSx}
+                  >
+                    <MenuItem value="1-10">1-10</MenuItem>
+                    <MenuItem value="11-25">11-25</MenuItem>
+                    <MenuItem value="25+">25+</MenuItem>
+                  </TextField>
+                  {errors.orgSize && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.orgSize}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Checkbox */}
+              <Box
+                className="signin-animate"
+                style={{ animationDelay: "0.52s" }}
+                sx={{ mt: 2.5 }}
+              >
+                <FormControl error={Boolean(errors.terms)}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <FormControlLabel
+                      sx={{ mx: 0, alignItems: "center" }}
+                      control={
+                        <Checkbox
+                          checked={isChecked}
+                          onChange={(e) => {
+                            setIsChecked(e.target.checked);
+                            if (errors.terms) {
+                              setErrors((prev) => ({ ...prev, terms: "" }));
+                            }
+                          }}
+                          sx={{
+                            color: "rgba(148, 163, 184, 0.6)",
+                            p: "4px 8px 4px 0",
+                            "&.Mui-checked": { color: "#1878b1" },
+                          }}
+                        />
+                      }
+                      label={
+                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                          I agree to privacy policy & terms{" "}
+                        </p>
+                      }
+                    />
+                  </Box>
+                  {errors.terms && (
+                    <FormHelperText sx={{ ml: "2px" }}>
+                      {errors.terms}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Button */}
+              <div
+                className="signin-animate"
+                style={{ animationDelay: "0.56s" }}
+              >
+                <button
+                  type="submit"
+                  className="flex items-center justify-center w-full px-4 py-3 mt-6 text-sm font-medium text-white transition-transform duration-200 rounded-lg bg-[#1878b1] shadow-theme-xs shadow-[#1878b1]/20 hover:bg-[#146393] hover:scale-[1.02] active:scale-[0.99]"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </Box>
+
+            <div
+              className="mt-6 signin-animate"
+              style={{ animationDelay: "0.6s" }}
+            >
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Already have an account? {""}
+                Already have an account?{" "}
                 <Link
                   to="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="font-medium transition-colors text-[#1878b1] hover:text-[#146393]"
                 >
                   Sign In
                 </Link>

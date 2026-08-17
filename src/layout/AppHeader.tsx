@@ -86,12 +86,12 @@ const AppHeader: React.FC = () => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src="./images/logo/logo-pp.png"
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src="./images/logo/logo-pp-dark.png"
               alt="Logo"
             />
           </Link>
@@ -115,8 +115,8 @@ const AppHeader: React.FC = () => {
               />
             </svg>
           </button>
-
-          <div className="hidden lg:block">
+ <ThemeToggleButton />
+          {/* <div className="hidden lg:block">
             <form>
               <div className="relative">
                 <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
@@ -149,7 +149,7 @@ const AppHeader: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
         </div>
         <div
           className={`${
@@ -158,9 +158,9 @@ const AppHeader: React.FC = () => {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
-            <ThemeToggleButton />
+           
             {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
