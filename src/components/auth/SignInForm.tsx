@@ -8,7 +8,7 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
+import {  EyeCloseIcon, EyeIcon } from "../../icons";
 
 // Shared professional styling for every MUI TextField in this form.
 // Uses currentColor / inherit so it follows Tailwind's dark: text color

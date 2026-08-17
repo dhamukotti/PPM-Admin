@@ -1,19 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback,  } from "react";
 import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
-  CalenderIcon,
-  ChevronDownIcon,
+
   GridIcon,
-  HorizontaLDots,
-  ListIcon,
-  PageIcon,
+
   PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
+
+
+
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
@@ -100,9 +96,9 @@ const AppSidebar: React.FC = () => {
     [location.pathname]
   );
 
-  const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
+  const renderMenuItems = (items: NavItem[]) => (
     <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
+      {items.map((nav) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <div
@@ -216,7 +212,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2> */}
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(navItems)}
             </div>
             <div className="">
               {/* <h2
@@ -232,7 +228,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2> */}
-              {renderMenuItems(othersItems, "others")}
+              {renderMenuItems(othersItems)}
             </div>
           </div>
         </nav>
