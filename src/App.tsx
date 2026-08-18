@@ -61,10 +61,10 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
-          <Route path="/" element={<Navigate to="/Login" replace />} />
-          <Route path="/Login" element={<SignIn />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-                          <Route path="/ForgotPassword" element={<ForgotPassword />} />
+                          <Route path="/forgotpassword" element={<ForgotPassword />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
