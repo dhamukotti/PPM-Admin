@@ -2,7 +2,8 @@
 import { useState } from 'react'
 
 // ** React Router Imports
-import { Link, } from 'react-router'
+import { Link } from 'react-router'
+import { useTheme as useCustomTheme } from "../../context/ThemeContext";
 
 // ** MUI Components
 import Box from '@mui/material/Box'
@@ -28,12 +29,14 @@ import { CircularProgress, Grid, useMediaQuery } from '@mui/material'
 import { debounce } from 'lodash'
 import { Controller, useForm } from 'react-hook-form'
 
+import { useNavigate } from 'react-router-dom'
 
 import { pattern } from '../../constants/patterns'
 
 
 // ** Logo path (served directly from /public, not imported as a module)
 const logoMain = '/images/logo/logo-pp.png'
+const logoDark = '/images/logo/logo-pp-dark.png'
 
 // ** Brand color
 const BRAND_COLOR = '#1878B2'
@@ -90,9 +93,13 @@ const LinkStyled = styled(Link)({
 })
 
 // ** Shared TextField styling for consistent focus/hover border color
-const textFieldSx = {
+const getTextFieldSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
     transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+    color: isDark ? '#ffffff' : undefined,
+    '& fieldset': {
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.3)' : undefined
+    },
     '&:hover .MuiOutlinedInput-notchedOutline': {
       borderColor: BRAND_COLOR
     },
@@ -104,10 +111,13 @@ const textFieldSx = {
       boxShadow: `0 0 0 3px rgba(24, 120, 178, 0.15)`
     }
   },
+  '& .MuiInputLabel-root': {
+    color: isDark ? 'rgba(255, 255, 255, 0.7)' : undefined
+  },
   '& .MuiInputLabel-root.Mui-focused': {
     color: BRAND_COLOR
   }
-}
+})
 
 // ** Shared Button styling with hover/press animation
 const submitButtonSx = {
@@ -140,9 +150,12 @@ type FormValidate = {
 const ForgotPassword = () => {
   // ** State
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const { theme } = useCustomTheme();
+  const isDark = theme === "dark";
 
   // ** Hooks
   const mdEndpoint = useMediaQuery('(min-width:1200px)')
+  const navigate = useNavigate(); // Initialize navigation
 
   const {
     handleSubmit,
@@ -150,14 +163,20 @@ const ForgotPassword = () => {
     formState: { errors }
   } = useForm<FormValidate>({
     defaultValues: {
-      email: import.meta.env.DEV ? 'samad.saiyed.ss@gmail.com' : ''
+      email: import.meta.env.DEV ? 'admin@gmail.com' : ''
     }
   })
 
   const onSubmit = async (data: FormValidate) => {
     console.log(data);
     setIsLoggingIn(true)
-   
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    
+    // Navigate to verify email page
+    navigate('/verifyEmail') // Fixed: using navigate() instead of navigation.navigate()
+    
     setIsLoggingIn(false)
   }
 
@@ -165,7 +184,7 @@ const ForgotPassword = () => {
 
   return (
     <Box
-      bgcolor={'background.default'}
+      bgcolor={isDark ? "#1a2744" : 'background.default'}
       height={'100%'}
       sx={{
         backgroundImage: 'url(/images/pages/login-bg.svg)',
@@ -174,17 +193,16 @@ const ForgotPassword = () => {
       }}
     >
       <Box height={'100dvh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-        <Card sx={{ zIndex: 1, maxWidth: { sm: '35rem' } }}>
+        <Card sx={{ zIndex: 1, maxWidth: { sm: '35rem' }, bgcolor: isDark ? '#1a2744' : 'background.paper' }}>
           <CardContent sx={{ padding: { xs: '3rem 2.25rem 1.75rem', sm: '6rem 4.5rem 3.5rem' } }}>
             <Box sx={{ mb: 6 }}>
               <Box display={'flex'} width={'100%'} justifyContent={'center'} mb={3}>
                 <Box display={'flex'}>
                   <img
-                    src={logoMain}
+                    src={isDark ? logoDark : logoMain}
                     alt='PPM-Logo'
-                    width={550}
-                    height={140}
-                    style={{ width: '100%', maxWidth: '550px', height: 'auto' }}
+                    width={100}
+                    height={100}
                   />
                 </Box>
               </Box>
@@ -192,10 +210,10 @@ const ForgotPassword = () => {
             <form noValidate autoComplete='off' onSubmit={handleSubmit(debounceSubmit)}>
               <Grid container spacing={6}>
                 <Grid item xs={12}>
-                  <Typography gutterBottom variant='body1' fontSize={22} fontWeight={600}>
+                  <Typography gutterBottom variant='body1' fontSize={22} fontWeight={600} sx={{ color: isDark ? '#ffffff' : 'text.primary' }}>
                     Forgot Password? 🔒
                   </Typography>
-                  <Typography variant='body1'>
+                  <Typography variant='body1' sx={{ color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'text.secondary' }}>
                     {`Enter your email and we'll send you instructions to reset your password`}
                   </Typography>
                 </Grid>
@@ -219,7 +237,8 @@ const ForgotPassword = () => {
                           error={Boolean(errors?.email)}
                           helperText={Boolean(errors?.email) && errors?.email?.message}
                           id='email'
-                          sx={textFieldSx}
+                          label='Email'
+                          sx={getTextFieldSx(isDark)}
                         />
                       )}
                     />

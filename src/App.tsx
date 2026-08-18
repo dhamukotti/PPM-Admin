@@ -21,7 +21,10 @@ import Home from "./pages/Dashboard/Home";
 import Payment from "./pages/Payment/Payment";
 import FeedbackList from "./pages/Feedback/FeedbackList";
 import ForgotPassword from "./pages/Forgotpassword/ForgotPassword";
+import VerifyEmail from "./pages/verify-email/VerifyEmail";
+
 export default function App() {
+  
   return (
     <>
       <Router>
@@ -64,7 +67,9 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-                          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+ <Route path="/verifyEmail" element={<VerifyEmail />} />
+
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
