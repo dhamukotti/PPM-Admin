@@ -39,6 +39,10 @@ import {
   Alert,
   Snackbar,
   Tooltip,
+  Fade,
+  Slide,
+  Grow,
+  Zoom,
 } from "@mui/material";
 import { useTheme as useCustomTheme } from "../../context/ThemeContext";
 
@@ -70,9 +74,13 @@ export interface Reply {
 // ---------------------------------------------------------------------------
 
 const NAMES = [
-  "Ariana Cole", "Marcus Lee", "Priya Nair", "Diego Fernandez", "Hannah Kim",
-  "Oliver Grant", "Fatima Al-Sayed", "Noah Becker", "Sophia Rossi", "Liam Turner",
-  "Meera Iyer", "Ethan Brooks", "Zara Ahmed", "Lucas Silva", "Isla Watson",
+  "Dhamu", "Thaniga", "Dinesh", "Deva", "Suriya", "Prabhu", "Karthik", "Vijay", "Suresh", "Ravi"
+];
+
+const EMAILS = [
+  "dhamu@gmail.com", "thaniga@gmail.com", "dinesh@gmail.com", "deva@gmail.com", 
+  "suriya@gmail.com", "prabhu@gmail.com", "karthik@gmail.com", "vijay@gmail.com",
+  "suresh@gmail.com", "ravi@gmail.com"
 ];
 
 const FEEDBACK_MESSAGES = [
@@ -101,6 +109,7 @@ function generateMockFeedbacks(count: number): FeedbackItem[] {
   return Array.from({ length: count }, (_, i) => {
     const status = randomStatus();
     const name = NAMES[i % NAMES.length];
+    const email = EMAILS[i % EMAILS.length];
     const timestamp = new Date();
     timestamp.setDate(timestamp.getDate() - Math.floor(Math.random() * 30));
     
@@ -115,7 +124,7 @@ function generateMockFeedbacks(count: number): FeedbackItem[] {
     return {
       id: `fb_${i + 1}`,
       userName: name,
-      userEmail: `${name.toLowerCase().replace(/\s+/g, ".")}@example.com`,
+      userEmail: email,
       message: FEEDBACK_MESSAGES[i % FEEDBACK_MESSAGES.length],
       status,
       timestamp: timestamp.toISOString(),
@@ -181,28 +190,39 @@ function StatusBadge({ status }: { status: FeedbackStatus }) {
   const isDark = theme === "dark";
   
   return (
-    <Chip
-      icon={
-        <Icon
-          icon={cfg.icon}
-          style={{
-            fontSize: 14,
-            color: cfg.color,
-          }}
-        />
-      }
-      label={cfg.label}
-      size="small"
-      sx={{
-        bgcolor: isDark ? cfg.darkBg : cfg.bg,
-        color: cfg.color,
-        fontWeight: 600,
-        fontSize: 11.5,
-        height: 24,
-        borderRadius: "999px",
-        "& .MuiChip-icon": { ml: "6px" },
-      }}
-    />
+    <Zoom in timeout={500}>
+      <Chip
+        icon={
+          <Icon
+            icon={cfg.icon}
+            style={{
+              fontSize: 14,
+              color: cfg.color,
+            }}
+          />
+        }
+        label={cfg.label}
+        size="small"
+        sx={{
+          bgcolor: isDark ? cfg.darkBg : cfg.bg,
+          color: cfg.color,
+          fontWeight: 600,
+          fontSize: 11.5,
+          height: 24,
+          borderRadius: "999px",
+          "& .MuiChip-icon": { ml: "6px" },
+          animation: "pulse-badge 2s ease-in-out infinite, glow-badge 3s ease-in-out infinite",
+          "@keyframes pulse-badge": {
+            "0%, 100%": { transform: "scale(1)" },
+            "50%": { transform: "scale(1.05)" },
+          },
+          "@keyframes glow-badge": {
+            "0%, 100%": { boxShadow: "0 0 5px rgba(99,102,241,0.1)" },
+            "50%": { boxShadow: "0 0 20px rgba(99,102,241,0.2)" },
+          },
+        }}
+      />
+    </Zoom>
   );
 }
 
@@ -223,61 +243,155 @@ function SummaryCard({
   const isDark = theme === "dark";
 
   return (
-    <Card
-      elevation={0}
-      sx={{
-        border: "1px solid",
-        borderColor: isDark ? "#1a2744" : "#e2e8f0",
-        borderRadius: "14px",
-        p: 2,
-        display: "flex",
-        alignItems: "center",
-        gap: 1.5,
-        height: "100%",
-        bgcolor: isDark ? "#0F1828" : "#ffffff",
-      }}
-    >
-      <Box
+    <Grow in timeout={600}>
+      <Card
+        elevation={0}
         sx={{
-          width: 40,
-          height: 40,
-          borderRadius: "10px",
-          bgcolor: `${accent}1F`,
+          border: "1px solid",
+          borderColor: isDark ? "#1a2744" : "#e2e8f0",
+          borderRadius: "14px",
+          p: 2,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
+          gap: 1.5,
+          height: "100%",
+          bgcolor: isDark ? "#0F1828" : "#ffffff",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          cursor: "pointer",
+          "&:hover": {
+            transform: "translateY(-6px) scale(1.03)",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.15)",
+            borderColor: accent,
+          },
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `linear-gradient(135deg, ${accent}15, transparent 50%)`,
+            opacity: 0,
+            transition: "opacity 0.6s ease",
+          },
+          "&:hover::before": {
+            opacity: 1,
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "3px",
+            background: `linear-gradient(90deg, ${accent}, ${accent}80, ${accent})`,
+            transform: "scaleX(0)",
+            transition: "transform 0.6s ease",
+            transformOrigin: "left",
+          },
+          "&:hover::after": {
+            transform: "scaleX(1)",
+          },
         }}
       >
-        <Icon icon={icon} style={{ fontSize: 20, color: accent }} />
-      </Box>
-      <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ 
-          fontSize: 22, 
-          fontWeight: 700, 
-          color: isDark ? "#ffffff" : "#0f172a", 
-          lineHeight: 1.1 
-        }}>
-          {value}
-        </Typography>
-        <Typography sx={{ 
-          fontSize: 12, 
-          color: isDark ? "#9ca3af" : "#475569", 
-          mt: 0.3 
-        }}>
-          {label}
-        </Typography>
-        {sub && (
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: "10px",
+            bgcolor: `${accent}1F`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            transition: "all 0.4s ease",
+            animation: "float-icon 3s ease-in-out infinite",
+            "@keyframes float-icon": {
+              "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+              "25%": { transform: "translateY(-4px) rotate(-5deg)" },
+              "75%": { transform: "translateY(4px) rotate(5deg)" },
+            },
+            "&:hover": {
+              transform: "scale(1.2) rotate(10deg)",
+            },
+          }}
+        >
+          <Icon icon={icon} style={{ fontSize: 20, color: accent }} />
+        </Box>
+        <Box sx={{ minWidth: 0 }}>
           <Typography sx={{ 
-            fontSize: 11, 
-            color: isDark ? "#6b7280" : "#94a3b8", 
-            mt: 0.2 
+            fontSize: 22, 
+            fontWeight: 700, 
+            color: isDark ? "#ffffff" : "#0f172a", 
+            lineHeight: 1.1,
+            transition: "color 0.3s ease",
+            animation: "count-up 1s ease-out",
+            "@keyframes count-up": {
+              "0%": { transform: "scale(0.5)", opacity: 0 },
+              "100%": { transform: "scale(1)", opacity: 1 },
+            },
           }}>
-            {sub}
+            {value}
           </Typography>
-        )}
-      </Box>
-    </Card>
+          <Typography sx={{ 
+            fontSize: 12, 
+            color: isDark ? "#9ca3af" : "#475569", 
+            mt: 0.3,
+            animation: "fade-in-text 0.8s ease-out",
+            "@keyframes fade-in-text": {
+              "0%": { opacity: 0, transform: "translateX(-10px)" },
+              "100%": { opacity: 1, transform: "translateX(0)" },
+            },
+          }}>
+            {label}
+          </Typography>
+          {sub && (
+            <Typography sx={{ 
+              fontSize: 11, 
+              color: isDark ? "#6b7280" : "#94a3b8", 
+              mt: 0.2 
+            }}>
+              {sub}
+            </Typography>
+          )}
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            right: -20,
+            top: -20,
+            width: 60,
+            height: 60,
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${accent}15, transparent 70%)`,
+            animation: "pulse-ring 3s ease-in-out infinite",
+            "@keyframes pulse-ring": {
+              "0%, 100%": { transform: "scale(1)", opacity: 0.5 },
+              "50%": { transform: "scale(1.8)", opacity: 0 },
+            },
+          }}
+        />
+        {/* Animated shimmer overlay */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: "-50%",
+            left: "-50%",
+            width: "200%",
+            height: "200%",
+            background: `linear-gradient(45deg, transparent 40%, ${accent}08 50%, transparent 60%)`,
+            animation: "shimmer-card 4s ease-in-out infinite",
+            "@keyframes shimmer-card": {
+              "0%": { transform: "translateX(-100%) rotate(45deg)" },
+              "100%": { transform: "translateX(100%) rotate(45deg)" },
+            },
+            pointerEvents: "none",
+          }}
+        />
+      </Card>
+    </Grow>
   );
 }
 
@@ -313,21 +427,50 @@ function ReplyDialog({
       onClose={onClose} 
       maxWidth="md" 
       fullWidth
+      TransitionComponent={Slide}
+      TransitionProps={{ timeout: 400 }}
       PaperProps={{
         sx: {
           borderRadius: 3,
           p: 1,
           bgcolor: isDark ? "#0F1828" : "#ffffff",
+          animation: "dialog-enter 0.5s ease-out",
+          "@keyframes dialog-enter": {
+            "0%": { transform: "scale(0.8) rotate(-5deg)", opacity: 0 },
+            "100%": { transform: "scale(1) rotate(0deg)", opacity: 1 },
+          },
         }
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            {feedback.userName.charAt(0)}
-          </Avatar>
+          <Zoom in timeout={800}>
+            <Avatar 
+              sx={{ 
+                bgcolor: "primary.main",
+                animation: "spin-avatar 4s linear infinite, glow-avatar 2s ease-in-out infinite",
+                "@keyframes spin-avatar": {
+                  "0%": { transform: "rotate(0deg)" },
+                  "100%": { transform: "rotate(360deg)" },
+                },
+                "@keyframes glow-avatar": {
+                  "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
+                  "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
+                },
+              }}
+            >
+              {feedback.userName.charAt(0)}
+            </Avatar>
+          </Zoom>
           <Box>
-            <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+            <Typography sx={{ 
+              color: isDark ? "#ffffff" : "#0f172a",
+              animation: "slide-in-right 0.5s ease-out",
+              "@keyframes slide-in-right": {
+                "0%": { transform: "translateX(-20px)", opacity: 0 },
+                "100%": { transform: "translateX(0)", opacity: 1 },
+              },
+            }}>
               Reply to {feedback.userName}
             </Typography>
             <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
@@ -345,12 +488,28 @@ function ReplyDialog({
             bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
             borderRadius: 2,
             mb: 3,
+            borderLeft: "3px solid",
+            borderColor: "primary.main",
+            animation: "slide-in-left 0.6s ease-out",
+            "@keyframes slide-in-left": {
+              "0%": { transform: "translateX(-30px) scale(0.95)", opacity: 0 },
+              "100%": { transform: "translateX(0) scale(1)", opacity: 1 },
+            },
           }}
         >
           <Typography variant="body2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
             Original Message:
           </Typography>
-          <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+          <Typography sx={{ 
+            color: isDark ? "#ffffff" : "#0f172a",
+            animation: "typewriter 1s steps(40, end)",
+            "@keyframes typewriter": {
+              "0%": { width: "0", opacity: 0 },
+              "100%": { width: "100%", opacity: 1 },
+            },
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}>
             {feedback.message}
           </Typography>
         </Paper>
@@ -366,8 +525,14 @@ function ReplyDialog({
             "& .MuiOutlinedInput-root": {
               borderRadius: 2,
               bgcolor: isDark ? "#0F1828" : "#ffffff",
+              transition: "all 0.4s ease",
+              "&:focus-within": {
+                transform: "scale(1.02)",
+                boxShadow: "0 8px 30px rgba(99,102,241,0.2)",
+              },
               "& fieldset": {
                 borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                transition: "border-color 0.3s ease",
               },
               "&:hover fieldset": {
                 borderColor: isDark ? "#2a3a5c" : "#94a3b8",
@@ -380,7 +545,16 @@ function ReplyDialog({
         />
       </DialogContent>
       <DialogActions sx={{ p: 2, pt: 0 }}>
-        <Button onClick={onClose} sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+        <Button 
+          onClick={onClose} 
+          sx={{ 
+            color: isDark ? "#9ca3af" : "#475569",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05) rotate(-3deg)",
+            },
+          }}
+        >
           Cancel
         </Button>
         <Button
@@ -392,6 +566,14 @@ function ReplyDialog({
             borderRadius: 2,
             textTransform: "none",
             px: 3,
+            transition: "all 0.4s ease",
+            "&:hover:not(:disabled)": {
+              transform: "scale(1.05) translateY(-3px)",
+              boxShadow: "0 12px 35px rgba(99,102,241,0.4)",
+            },
+            "&:active:not(:disabled)": {
+              transform: "scale(0.95)",
+            },
           }}
         >
           Send Reply
@@ -441,22 +623,51 @@ function ViewFeedbackDialog({
       onClose={onClose} 
       maxWidth="md" 
       fullWidth
+      TransitionComponent={Fade}
+      TransitionProps={{ timeout: 500 }}
       PaperProps={{
         sx: {
           borderRadius: 3,
           p: 1,
           bgcolor: isDark ? "#0F1828" : "#ffffff",
+          animation: "dialog-zoom 0.6s ease-out",
+          "@keyframes dialog-zoom": {
+            "0%": { transform: "scale(0.7) rotate(3deg)", opacity: 0 },
+            "100%": { transform: "scale(1) rotate(0deg)", opacity: 1 },
+          },
         }
       }}
     >
       <DialogTitle>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Avatar sx={{ bgcolor: "primary.main" }}>
-              {feedback.userName.charAt(0)}
-            </Avatar>
+            <Zoom in timeout={800}>
+              <Avatar 
+                sx={{ 
+                  bgcolor: "primary.main",
+                  animation: "pulse-avatar 2s ease-in-out infinite, glow-avatar 2s ease-in-out infinite",
+                  "@keyframes pulse-avatar": {
+                    "0%, 100%": { transform: "scale(1)" },
+                    "50%": { transform: "scale(1.1)" },
+                  },
+                  "@keyframes glow-avatar": {
+                    "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
+                    "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
+                  },
+                }}
+              >
+                {feedback.userName.charAt(0)}
+              </Avatar>
+            </Zoom>
             <Box>
-              <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+              <Typography sx={{ 
+                color: isDark ? "#ffffff" : "#0f172a",
+                animation: "fade-in 0.5s ease-out",
+                "@keyframes fade-in": {
+                  "0%": { opacity: 0 },
+                  "100%": { opacity: 1 },
+                },
+              }}>
                 {feedback.userName}
               </Typography>
               <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
@@ -472,8 +683,10 @@ function ViewFeedbackDialog({
                 size="small"
                 sx={{
                   color: feedback.status === "open" ? "#16a34a" : "#d97706",
+                  transition: "all 0.4s ease",
                   "&:hover": {
-                    bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.1)" : "rgba(217,119,6,0.1)",
+                    transform: "rotate(180deg) scale(1.2)",
+                    bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.15)" : "rgba(217,119,6,0.15)",
                   },
                 }}
               >
@@ -498,6 +711,13 @@ function ViewFeedbackDialog({
               p: 2,
               bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
               borderRadius: 2,
+              borderLeft: "3px solid",
+              borderColor: "secondary.main",
+              animation: "slide-in-right 0.6s ease-out",
+              "@keyframes slide-in-right": {
+                "0%": { transform: "translateX(30px) scale(0.95)", opacity: 0 },
+                "100%": { transform: "translateX(0) scale(1)", opacity: 1 },
+              },
             }}
           >
             <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
@@ -512,30 +732,41 @@ function ViewFeedbackDialog({
               Replies ({feedback.replies.length})
             </Typography>
             <Stack spacing={1}>
-              {feedback.replies.map((reply) => (
-                <Paper
-                  key={reply.id}
-                  elevation={0}
-                  sx={{
-                    p: 2,
-                    bgcolor: isDark ? "rgba(25,118,210,0.1)" : "rgba(25,118,210,0.05)",
-                    borderRadius: 2,
-                    borderLeft: "3px solid",
-                    borderColor: "primary.main",
-                  }}
-                >
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="subtitle2" color="primary">
-                      {reply.repliedBy}
+              {feedback.replies.map((reply, index) => (
+                <Grow in timeout={300 + index * 150} key={reply.id}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 2,
+                      bgcolor: isDark ? "rgba(25,118,210,0.1)" : "rgba(25,118,210,0.05)",
+                      borderRadius: 2,
+                      borderLeft: "3px solid",
+                      borderColor: "primary.main",
+                      transition: "all 0.4s ease",
+                      "&:hover": {
+                        transform: "translateX(10px) scale(1.02)",
+                        boxShadow: "0 8px 30px rgba(0,0,0,0.1)",
+                      },
+                      animation: "slide-in-left 0.5s ease-out",
+                      "@keyframes slide-in-left": {
+                        "0%": { transform: "translateX(-20px)", opacity: 0 },
+                        "100%": { transform: "translateX(0)", opacity: 1 },
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                      <Typography variant="subtitle2" color="primary">
+                        {reply.repliedBy}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+                        {formatDate(reply.timestamp)}
+                      </Typography>
+                    </Box>
+                    <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+                      {reply.message}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
-                      {formatDate(reply.timestamp)}
-                    </Typography>
-                  </Box>
-                  <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
-                    {reply.message}
-                  </Typography>
-                </Paper>
+                  </Paper>
+                </Grow>
               ))}
             </Stack>
           </Box>
@@ -558,6 +789,11 @@ function ViewFeedbackDialog({
               "& .MuiOutlinedInput-root": {
                 borderRadius: 2,
                 bgcolor: isDark ? "#0F1828" : "#ffffff",
+                transition: "all 0.4s ease",
+                "&:focus-within": {
+                  transform: "scale(1.02)",
+                  boxShadow: "0 4px 20px rgba(99,102,241,0.15)",
+                },
                 "& fieldset": {
                   borderColor: isDark ? "#1a2744" : "#e2e8f0",
                 },
@@ -580,6 +816,11 @@ function ViewFeedbackDialog({
               sx={{
                 borderRadius: 2,
                 textTransform: "none",
+                transition: "all 0.4s ease",
+                "&:hover:not(:disabled)": {
+                  transform: "scale(1.05) translateY(-2px)",
+                  boxShadow: "0 8px 25px rgba(99,102,241,0.3)",
+                },
               }}
             >
               Send Reply
@@ -588,7 +829,16 @@ function ViewFeedbackDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+        <Button 
+          onClick={onClose} 
+          sx={{ 
+            color: isDark ? "#9ca3af" : "#475569",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+            },
+          }}
+        >
           Close
         </Button>
       </DialogActions>
@@ -605,7 +855,7 @@ type StatusFilter = "all" | FeedbackStatus;
 function FeedbackContent() {
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
-  const [data, setData] = useState<FeedbackItem[]>(() => generateMockFeedbacks(100));
+  const [data, setData] = useState<FeedbackItem[]>(() => generateMockFeedbacks(10));
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sorting, setSorting] = useState<SortingState>([{ id: "timestamp", desc: true }]);
@@ -709,20 +959,35 @@ function FeedbackContent() {
             .toUpperCase();
           return (
             <Stack direction="row" alignItems="center" spacing={1.5} sx={{ minWidth: 0 }}>
-              <Avatar sx={{ bgcolor: avatarColor, width: 34, height: 34, fontWeight: 700, fontSize: 12 }}>
+              <Avatar 
+                sx={{ 
+                  bgcolor: avatarColor, 
+                  width: 34, 
+                  height: 34, 
+                  fontWeight: 700, 
+                  fontSize: 12,
+                  transition: "all 0.4s ease",
+                  "&:hover": {
+                    transform: "scale(1.3) rotate(15deg)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                  },
+                }}
+              >
                 {initials}
               </Avatar>
               <Box sx={{ minWidth: 0 }}>
                 <Typography noWrap sx={{ 
                   fontSize: 13.5, 
                   fontWeight: 600, 
-                  color: isDark ? "#ffffff" : "#0f172a" 
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  transition: "color 0.3s ease",
                 }}>
                   {feedback.userName}
                 </Typography>
                 <Typography noWrap sx={{ 
                   fontSize: 12, 
-                  color: isDark ? "#9ca3af" : "#475569" 
+                  color: isDark ? "#9ca3af" : "#475569",
+                  transition: "color 0.3s ease",
                 }}>
                   {feedback.userEmail}
                 </Typography>
@@ -739,6 +1004,11 @@ function FeedbackContent() {
             fontSize: 13, 
             color: isDark ? "#9ca3af" : "#475569",
             maxWidth: 250,
+            transition: "all 0.3s ease",
+            "&:hover": {
+              color: isDark ? "#ffffff" : "#0f172a",
+              transform: "scale(1.02)",
+            },
           }}>
             {row.original.message}
           </Typography>
@@ -757,7 +1027,8 @@ function FeedbackContent() {
         cell: ({ row }) => (
           <Typography sx={{ 
             fontSize: 13, 
-            color: isDark ? "#9ca3af" : "#475569" 
+            color: isDark ? "#9ca3af" : "#475569",
+            transition: "color 0.3s ease",
           }}>
             {formatDate(row.original.timestamp)}
           </Typography>
@@ -776,8 +1047,10 @@ function FeedbackContent() {
                   onClick={() => handleOpenViewDialog(feedback)}
                   sx={{
                     color: isDark ? "#9ca3af" : "#475569",
+                    transition: "all 0.4s ease",
                     "&:hover": {
-                      bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                      transform: "scale(1.3) rotate(-10deg)",
+                      bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
                     },
                   }}
                 >
@@ -790,8 +1063,10 @@ function FeedbackContent() {
                   onClick={() => handleOpenReplyDialog(feedback)}
                   sx={{
                     color: isDark ? "#9ca3af" : "#475569",
+                    transition: "all 0.4s ease",
                     "&:hover": {
-                      bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+                      transform: "scale(1.3) rotate(15deg)",
+                      bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
                     },
                   }}
                 >
@@ -804,8 +1079,10 @@ function FeedbackContent() {
                   onClick={() => handleStatusChange(feedback.id, feedback.status === "open" ? "closed" : "open")}
                   sx={{
                     color: feedback.status === "open" ? "#16a34a" : "#d97706",
+                    transition: "all 0.4s ease",
                     "&:hover": {
-                      bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.1)" : "rgba(217,119,6,0.1)",
+                      transform: "scale(1.3) rotate(180deg)",
+                      bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.15)" : "rgba(217,119,6,0.15)",
                     },
                   }}
                 >
@@ -841,27 +1118,81 @@ function FeedbackContent() {
   return (
     <Box sx={{ 
       minHeight: "100vh", 
-      bgcolor: isDark ? "#0F1828" : "#f8fafc" 
+      bgcolor: isDark ? "#0F1828" : "#f8fafc",
+      position: "relative",
+      overflow: "hidden",
+      "&::before": {
+        content: '""',
+        position: "absolute",
+        top: -200,
+        right: -200,
+        width: 400,
+        height: 400,
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(99,102,241,0.05), transparent 70%)",
+        animation: "float-bg 20s ease-in-out infinite",
+        "@keyframes float-bg": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(-50px, -30px) scale(1.2)" },
+          "66%": { transform: "translate(50px, 20px) scale(0.8)" },
+        },
+      },
+      "&::after": {
+        content: '""',
+        position: "absolute",
+        bottom: -200,
+        left: -200,
+        width: 400,
+        height: 400,
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(16,185,129,0.05), transparent 70%)",
+        animation: "float-bg-reverse 25s ease-in-out infinite",
+        "@keyframes float-bg-reverse": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(50px, 30px) scale(1.3)" },
+          "66%": { transform: "translate(-50px, -20px) scale(0.7)" },
+        },
+      },
     }}>
       <Box sx={{ 
         maxWidth: 1440, 
         mx: "auto", 
         px: { xs: 2, sm: 3, md: 4 }, 
-        py: { xs: 3, md: 4 } 
+        py: { xs: 3, md: 4 },
+        position: "relative",
+        zIndex: 1,
       }}>
         {/* Header */}
         <Box sx={{ mb: 3 }}>
           <Typography sx={{ 
             fontSize: 20, 
             fontWeight: 700, 
-            color: isDark ? "#ffffff" : "#0f172a" 
+            color: isDark ? "#ffffff" : "#0f172a",
+            animation: "fade-in-down 0.8s ease-out, shimmer-text 3s ease-in-out infinite",
+            "@keyframes fade-in-down": {
+              "0%": { transform: "translateY(-30px) scale(0.9)", opacity: 0 },
+              "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
+            },
+            "@keyframes shimmer-text": {
+              "0%, 100%": { backgroundPosition: "200% center" },
+              "50%": { backgroundPosition: "0% center" },
+            },
+            background: isDark ? "none" : "linear-gradient(90deg, #0f172a, #6366f1, #0f172a)",
+            backgroundSize: "200% auto",
+            WebkitBackgroundClip: isDark ? "none" : "text",
+            WebkitTextFillColor: isDark ? "#ffffff" : "transparent",
           }}>
             Feedback Management
           </Typography>
           <Typography sx={{ 
             fontSize: 13.5, 
             color: isDark ? "#9ca3af" : "#475569", 
-            mt: 0.4 
+            mt: 0.4,
+            animation: "fade-in-up 0.8s ease-out",
+            "@keyframes fade-in-up": {
+              "0%": { transform: "translateY(20px)", opacity: 0 },
+              "100%": { transform: "translateY(0)", opacity: 1 },
+            },
           }}>
             Review and respond to customer feedback
           </Typography>
@@ -901,7 +1232,14 @@ function FeedbackContent() {
           spacing={1.5}
           alignItems={{ xs: "stretch", lg: "center" }}
           justifyContent="space-between"
-          sx={{ mb: 5 }}
+          sx={{ 
+            mb: 5,
+            animation: "fade-in 0.6s ease-out",
+            "@keyframes fade-in": {
+              "0%": { opacity: 0, transform: "scale(0.95)" },
+              "100%": { opacity: 1, transform: "scale(1)" },
+            },
+          }}
         >
           <TextField
             size="small"
@@ -913,8 +1251,14 @@ function FeedbackContent() {
               "& .MuiOutlinedInput-root": { 
                 borderRadius: "10px", 
                 bgcolor: isDark ? "#0F1828" : "#ffffff",
+                transition: "all 0.4s ease",
+                "&:focus-within": {
+                  transform: "scale(1.03)",
+                  boxShadow: "0 8px 30px rgba(99,102,241,0.2)",
+                },
                 "& fieldset": {
                   borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                  transition: "border-color 0.3s ease",
                 },
                 "&:hover fieldset": {
                   borderColor: isDark ? "#2a3a5c" : "#94a3b8",
@@ -927,7 +1271,13 @@ function FeedbackContent() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Icon icon="lucide:search" style={{ fontSize: 17, color: isDark ? "#6b7280" : "#94a3b8" }} />
+                  <Icon 
+                    icon="lucide:search" 
+                    style={{ 
+                      fontSize: 17, 
+                      color: isDark ? "#6b7280" : "#94a3b8",
+                    }} 
+                  />
                 </InputAdornment>
               ),
             }}
@@ -946,47 +1296,57 @@ function FeedbackContent() {
               rowGap: 0.5,
             }}
           >
-            {(["all", "open", "closed"] as StatusFilter[]).map((s) => (
-              <Chip
-                key={s}
-                label={s.charAt(0).toUpperCase() + s.slice(1)}
-                onClick={() => setStatusFilter(s)}
-                size="small"
-                sx={{
-                  fontSize: 12,
-                  fontWeight: 500,
-                  borderRadius: "8px",
-                  bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : "transparent",
-                  color: statusFilter === s ? (isDark ? "#0F1828" : "#ffffff") : (isDark ? "#9ca3af" : "#475569"),
-                  "&:hover": {
-                    bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : (isDark ? "#1a2744" : "#f1f5f9"),
-                  },
-                }}
-              />
+            {(["all", "open", "closed"] as StatusFilter[]).map((s, index) => (
+              <Grow in timeout={300 + index * 150} key={s}>
+                <Chip
+                  label={s.charAt(0).toUpperCase() + s.slice(1)}
+                  onClick={() => setStatusFilter(s)}
+                  size="small"
+                  sx={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    borderRadius: "8px",
+                    bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : "transparent",
+                    color: statusFilter === s ? (isDark ? "#0F1828" : "#ffffff") : (isDark ? "#9ca3af" : "#475569"),
+                    transition: "all 0.4s ease",
+                    "&:hover": {
+                      transform: "scale(1.08)",
+                      bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : (isDark ? "#1a2744" : "#f1f5f9"),
+                    },
+                  }}
+                />
+              </Grow>
             ))}
           </Stack>
         </Stack>
 
         {/* Table */}
         {gridRows.length === 0 ? (
-          <Card
-            elevation={0}
-            sx={{
-              border: "1px solid",
-              borderColor: isDark ? "#1a2744" : "#e2e8f0",
-              borderRadius: "14px",
-              py: 6,
-              textAlign: "center",
-              bgcolor: isDark ? "#0F1828" : "#ffffff",
-            }}
-          >
-            <Typography sx={{ 
-              fontSize: 13.5, 
-              color: isDark ? "#6b7280" : "#94a3b8" 
-            }}>
-              No feedback matches your search or filters.
-            </Typography>
-          </Card>
+          <Zoom in timeout={600}>
+            <Card
+              elevation={0}
+              sx={{
+                border: "1px solid",
+                borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                borderRadius: "14px",
+                py: 6,
+                textAlign: "center",
+                bgcolor: isDark ? "#0F1828" : "#ffffff",
+                animation: "fade-in 0.6s ease-out",
+                "@keyframes fade-in": {
+                  "0%": { opacity: 0 },
+                  "100%": { opacity: 1 },
+                },
+              }}
+            >
+              <Typography sx={{ 
+                fontSize: 13.5, 
+                color: isDark ? "#6b7280" : "#94a3b8" 
+              }}>
+                No feedback matches your search or filters.
+              </Typography>
+            </Card>
+          </Zoom>
         ) : (
           <TableContainer
             sx={{
@@ -994,6 +1354,11 @@ function FeedbackContent() {
               borderColor: isDark ? "#1a2744" : "#e2e8f0",
               borderRadius: "14px",
               bgcolor: isDark ? "#0F1828" : "#ffffff",
+              animation: "slide-up 0.6s ease-out",
+              "@keyframes slide-up": {
+                "0%": { transform: "translateY(40px) scale(0.95)", opacity: 0 },
+                "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
+              },
             }}
           >
             <Table size="small">
@@ -1009,6 +1374,10 @@ function FeedbackContent() {
                           color: isDark ? "#9ca3af" : "#475569",
                           borderColor: isDark ? "#1a2744" : "#e2e8f0",
                           whiteSpace: "nowrap",
+                          transition: "color 0.3s ease",
+                          "&:hover": {
+                            color: isDark ? "#ffffff" : "#0f172a",
+                          },
                         }}
                       >
                         {header.isPlaceholder
@@ -1020,28 +1389,32 @@ function FeedbackContent() {
                 ))}
               </TableHead>
               <TableBody>
-                {gridRows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{
-                      "&:last-child td": { borderBottom: 0 },
-                      "&:hover": { 
-                        bgcolor: isDark ? "#1a2744" : "#f1f5f9" 
-                      },
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        sx={{
-                          borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                          py: 1.2,
-                        }}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                {gridRows.map((row, index) => (
+                  <Fade in timeout={300 + index * 80} key={row.id}>
+                    <TableRow
+                      sx={{
+                        "&:last-child td": { borderBottom: 0 },
+                        "&:hover": { 
+                          bgcolor: isDark ? "#1a2744" : "#f1f5f9",
+                          transform: "scale(1.02)",
+                          transition: "all 0.3s ease",
+                          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                        },
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          sx={{
+                            borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                            py: 1.2,
+                          }}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </Fade>
                 ))}
               </TableBody>
             </Table>
@@ -1049,10 +1422,23 @@ function FeedbackContent() {
         )}
 
         {/* Pagination */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pt: 3 }}>
+        <Stack 
+          direction="row" 
+          alignItems="center" 
+          justifyContent="space-between" 
+          sx={{ 
+            pt: 3,
+            animation: "fade-in-up 0.8s ease-out",
+            "@keyframes fade-in-up": {
+              "0%": { transform: "translateY(30px)", opacity: 0 },
+              "100%": { transform: "translateY(0)", opacity: 1 },
+            },
+          }}
+        >
           <Typography sx={{ 
             fontSize: 12, 
-            color: isDark ? "#9ca3af" : "#475569" 
+            color: isDark ? "#9ca3af" : "#475569",
+            transition: "color 0.3s ease",
           }}>
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {Math.max(table.getPageCount(), 1)} · {table.getFilteredRowModel().rows.length} results
@@ -1067,6 +1453,15 @@ function FeedbackContent() {
                 borderColor: isDark ? "#1a2744" : "#e2e8f0", 
                 borderRadius: "8px",
                 color: isDark ? "#ffffff" : "#0f172a",
+                transition: "all 0.4s ease",
+                "&:hover:not(:disabled)": {
+                  transform: "scale(1.15) translateX(-4px)",
+                  bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                },
+                "&:active:not(:disabled)": {
+                  transform: "scale(0.9)",
+                },
                 "&.Mui-disabled": {
                   color: isDark ? "#6b7280" : "#94a3b8",
                 }
@@ -1083,6 +1478,15 @@ function FeedbackContent() {
                 borderColor: isDark ? "#1a2744" : "#e2e8f0", 
                 borderRadius: "8px",
                 color: isDark ? "#ffffff" : "#0f172a",
+                transition: "all 0.4s ease",
+                "&:hover:not(:disabled)": {
+                  transform: "scale(1.15) translateX(4px)",
+                  bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                },
+                "&:active:not(:disabled)": {
+                  transform: "scale(0.9)",
+                },
                 "&.Mui-disabled": {
                   color: isDark ? "#6b7280" : "#94a3b8",
                 }
@@ -1122,19 +1526,29 @@ function FeedbackContent() {
         autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        TransitionComponent={Slide}
+        TransitionProps={{ timeout: 400 }}
       >
-        <Alert
-          severity={snackbar.severity}
-          sx={{
-            borderRadius: 2,
-            bgcolor: isDark ? "#0F1828" : "#ffffff",
-            color: isDark ? "#ffffff" : "#0f172a",
-            border: "1px solid",
-            borderColor: isDark ? "#1a2744" : "#e2e8f0",
-          }}
-        >
-          {snackbar.message}
-        </Alert>
+        <Zoom in timeout={500}>
+          <Alert
+            severity={snackbar.severity}
+            sx={{
+              borderRadius: 2,
+              bgcolor: isDark ? "#0F1828" : "#ffffff",
+              color: isDark ? "#ffffff" : "#0f172a",
+              border: "1px solid",
+              borderColor: isDark ? "#1a2744" : "#e2e8f0",
+              animation: "slide-in-bottom 0.6s ease-out",
+              "@keyframes slide-in-bottom": {
+                "0%": { transform: "translateY(100px) scale(0.8)", opacity: 0 },
+                "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
+              },
+              boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+            }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Zoom>
       </Snackbar>
     </Box>
   );

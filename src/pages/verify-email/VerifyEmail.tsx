@@ -16,6 +16,8 @@ import OtpInput from 'react-otp-input'
 import { CardContent, Divider } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useTheme as useCustomTheme } from "../../context/ThemeContext";
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 // ** Styled Components
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -35,6 +37,7 @@ const VerifyEmail = () => {
   const smBreakpoint = useMediaQuery(muiTheme.breakpoints.down('sm')) // Pass theme explicitly
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
+  const navigate = useNavigate();
 
   // ** States
   const [otp, setOtp] = useState('')
@@ -42,6 +45,7 @@ const VerifyEmail = () => {
   const [minutes, setMinutes] = useState(INIT_MINUTE)
   const [seconds, setSeconds] = useState(INIT_SECONDS)
   const [isResending, setIsResending] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
 
   // ** Theme-based colors
   const backgroundColor = isDark ? '#0F1828' : '#FFFFFF';
@@ -56,6 +60,34 @@ const VerifyEmail = () => {
     : '0 8px 32px rgba(0, 0, 0, 0.08)';
   const timerColor = isDark ? '#4a6a8a' : '#1878B2';
 
+  // ** Timer logic
+  useEffect(() => {
+    // Only start timer if minutes and seconds are not both 0
+    if (minutes === 0 && seconds === 0) {
+      return; // Don't start interval when timer is at 0
+    }
+
+    const interval = setInterval(() => {
+      setSeconds(prevSeconds => {
+        if (prevSeconds === 0) {
+          setMinutes(prevMinutes => {
+            if (prevMinutes === 0) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prevMinutes - 1;
+          });
+          return 59;
+        }
+        return prevSeconds - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [minutes, seconds]); // Add dependencies to re-run when minutes/seconds change
+
   // ** otp change function
   const handleOTPChange = (otpValue: string) => {
     setOtp(otpValue)
@@ -64,6 +96,12 @@ const VerifyEmail = () => {
 
   // ** reset otp change function
   const handleResendOtp = async () => {
+    // Check if timer is at 0 (resend allowed)
+    if (minutes !== 0 || seconds !== 0) {
+      toast.error('Please wait for the timer to expire before resending');
+      return;
+    }
+
     setIsResending(true)
     setOtp('')
     setOtpValid(false)
@@ -72,60 +110,44 @@ const VerifyEmail = () => {
     console.log('Resending OTP to:', EMAIL)
     await new Promise(resolve => setTimeout(resolve, 1500))
 
+    // Reset timer to initial values
     setMinutes(INIT_MINUTE)
     setSeconds(INIT_SECONDS)
     setIsResending(false)
     
     // Show success message
-    alert('OTP resent successfully!')
+    toast.success('OTP resent successfully!')
   }
 
   // ** check otp function
-  const checkOtp = async () => {
-    if (otpValid) {
+  const handleVerifyOtp = async () => {
+    if (!otpValid || isVerifying) return;
+
+    setIsVerifying(true)
+    
+    try {
       // Simulate API verification
       console.log('Verifying OTP:', otp, 'for email:', EMAIL)
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, 1000))
       
       // For demo: accept any 6-digit code
       if (otp.length === 6) {
-        console.log('OTP verified successfully!')
-        alert('OTP Verified Successfully!')
+        toast.success('OTP Verified Successfully!')
+        // Redirect to login page after successful verification
+        setTimeout(() => {
+          navigate('/')
+        }, 1500)
       } else {
         setOtp('')
         setOtpValid(false)
-        alert('Invalid OTP. Please try again.')
+        toast.error('Invalid OTP. Please try again.')
       }
+    } catch (error) {
+      toast.error('Verification failed. Please try again.')
+    } finally {
+      setIsVerifying(false)
     }
   }
-
-  useEffect(() => {
-    checkOtp()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [otpValid])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prevSeconds => {
-        if (prevSeconds === 0) {
-          setMinutes(prevMinutes => {
-            if (prevMinutes === 0) {
-              clearInterval(interval)
-              return 0
-            }
-            return prevMinutes - 1
-          })
-          return 59
-        }
-        return prevSeconds - 1
-      })
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <Box 
@@ -257,7 +279,7 @@ const VerifyEmail = () => {
               Didn't get the mail?
             </Typography>
             <Button
-              onMouseDown={handleResendOtp}
+              onClick={handleResendOtp}
               disabled={!(minutes === 0 && seconds === 0) || isResending}
               data-testid='resend-button'
               sx={{
@@ -281,13 +303,13 @@ const VerifyEmail = () => {
             </Button>
           </Box>
 
-          {/* Optional: Verify Button - For better UX */}
+          {/* Verify Button */}
           <Box mt={3}>
             <Button
               fullWidth
               variant='contained'
-              onClick={checkOtp}
-              disabled={!otpValid || isResending}
+              onClick={handleVerifyOtp}
+              disabled={!otpValid || isVerifying || isResending}
               sx={{
                 backgroundColor: '#1878B2',
                 color: 'white',
@@ -317,7 +339,7 @@ const VerifyEmail = () => {
                 }
               }}
             >
-              Verify OTP
+              {isVerifying ? 'Verifying...' : 'Verify OTP'}
             </Button>
           </Box>
         </CardContent>

@@ -224,7 +224,7 @@ A Warm welcome to the new era of the project management application
               </div>
             </Box>
 
-            <div
+            {/* <div
               className="mt-6 signin-animate"
               style={{ animationDelay: "0.42s" }}
             >
@@ -237,7 +237,7 @@ A Warm welcome to the new era of the project management application
                   Sign Up
                 </Link>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
