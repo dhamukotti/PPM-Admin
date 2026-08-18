@@ -204,7 +204,7 @@ A Warm welcome to the new era of the project management application
                     }
                   />
                   <Link
-                    to="/reset-password"
+                    to="/ForgotPassword"
                     className="text-sm font-medium transition-colors text-[#1878b1] hover:text-[#146393]"
                   >
                     Forgot password?

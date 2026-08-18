@@ -19,6 +19,8 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Payment from "./pages/Payment/Payment";
+import FeedbackList from "./pages/Feedback/FeedbackList";
+import ForgotPassword from "./pages/Forgotpassword/ForgotPassword";
 export default function App() {
   return (
     <>
@@ -32,8 +34,10 @@ export default function App() {
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
              <Route path="/Payment" element={<Payment />} />
+                          <Route path="/FeedbackList" element={<FeedbackList />} />
 
-            Payment
+
+            
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
 
@@ -60,6 +64,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="/Login" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+                          <Route path="/ForgotPassword" element={<ForgotPassword />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

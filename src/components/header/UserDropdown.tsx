@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
 
 export default function UserDropdown() {
@@ -13,6 +12,7 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
   return (
     <div className="relative">
       <button
@@ -22,29 +22,31 @@ export default function UserDropdown() {
         <span className="mr-3 overflow-hidden rounded-full h-8 w-8">
           <img src="/images/user/owner.jpg" alt="User" />
         </span>
-
-        
       </button>
 
-      <Dropdown
-        isOpen={isOpen}
-        onClose={closeDropdown}
-        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
+      <div
+        className={`
+          absolute right-0 mt-[17px] flex w-[220px] flex-col rounded-xl border border-gray-200 bg-white p-2.5 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark
+          transition-all duration-300 ease-out origin-top-right
+          ${
+            isOpen
+              ? "opacity-100 scale-100 translate-y-0 rotate-0 pointer-events-auto"
+              : "opacity-0 scale-95 -translate-y-3 rotate-[-2deg] pointer-events-none"
+          }
+        `}
       >
-        
-
-        <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
+        <ul className="flex flex-col gap-1 pt-3 pb-2.5 border-b border-gray-200 dark:border-gray-800">
           <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
               to="/profile"
-              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className="flex items-center gap-3 px-3 py-1.5 text-sm font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 transition-all duration-200"
             >
               <svg
-                className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
-                width="24"
-                height="24"
+                className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300 transition-all duration-200"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -59,16 +61,15 @@ export default function UserDropdown() {
               Edit profile
             </DropdownItem>
           </li>
-       
         </ul>
         <Link
           to="/Login"
-          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+          className="flex items-center gap-3 px-3 py-1.5 mt-2.5 text-sm font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 transition-all duration-200"
         >
           <svg
-            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
-            width="24"
-            height="24"
+            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300 transition-all duration-200"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -80,9 +81,9 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
+          Log out
         </Link>
-      </Dropdown>
+      </div>
     </div>
   );
 }
