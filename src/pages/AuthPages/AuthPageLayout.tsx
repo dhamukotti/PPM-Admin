@@ -115,12 +115,7 @@ export default function AuthLayout({
                     </svg>
                     Agile
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-xs text-gray-300 dark:text-white/50 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-brand-400/30 group">
-                    <svg className="w-3 h-3 text-brand-400 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Scrum
-                  </span>
+                 
              
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-xs text-gray-300 dark:text-white/50 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-brand-400/30 group">
                     <svg className="w-3 h-3 text-brand-400 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +132,7 @@ export default function AuthLayout({
                 </div>
 
                 {/* Admin Login Badge with Enhanced Animation */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 animate-fade-in-up hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-brand-400/30 group" style={{ animationDelay: '0.8s', opacity: 0 }}>
+                {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 animate-fade-in-up hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-brand-400/30 group" style={{ animationDelay: '0.8s', opacity: 0 }}>
                   <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse-dot"></span>
                   <span className="text-xs text-gray-300 dark:text-white/50 font-medium group-hover:text-brand-300 transition-colors duration-300">
                     Admin Access
@@ -150,7 +145,7 @@ export default function AuthLayout({
                   <span className="text-xs text-brand-400/60 group-hover:text-brand-400 transition-colors duration-300 animate-pulse-text">
                     ● Live
                   </span>
-                </div>
+                </div> */}
 
                 {/* Animated Bottom Decorative Line */}
                 <div className="flex items-center justify-center gap-3 mt-2 animate-fade-in-up" style={{ animationDelay: '1s', opacity: 0 }}>

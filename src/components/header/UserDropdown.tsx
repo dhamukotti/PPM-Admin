@@ -1,32 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Link } from "react-router";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
+     setIsActive(true)
   }
 
   function closeDropdown() {
     setIsOpen(false);
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="relative">
-      <button
-        onClick={toggleDropdown}
-        className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
-      >
-        <span className="mr-3 overflow-hidden rounded-full h-8 w-8">
-          <img src="/images/user/usr.png" alt="User" />
-        </span>
-      </button>
+    <div className="relative" ref={dropdownRef}>
+   <button
+  onClick={toggleDropdown}
+  className="relative flex items-center text-gray-700 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 dark:text-gray-400 group"
+  aria-label="User menu"
+>
+  {/* Avatar Image */}
+      <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-blue-500/20 dark:ring-blue-400/20">
+              <img src="/images/user/usr.png" alt="User" className="w-full h-full object-cover" />
+            </div>
+
+  {/* Status Indicator */}
+  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5">
+    {/* Status Dot */}
+    <span 
+      className={`absolute inset-0 rounded-full border-2 border-white transition-all duration-300 dark:border-gray-900 ${
+        isActive 
+          ? "bg-green-500 shadow-lg shadow-green-500/50" 
+          : "bg-gray-400 dark:bg-gray-600"
+      }`} 
+    />
+    
+    {/* Pulse Animation (only when active) */}
+    {isActive && (
+      <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
+    )}
+  </span>
+</button>
 
       <div
         className={`
-          absolute right-0 mt-[17px] flex w-[220px] flex-col rounded-xl border border-gray-200 bg-white p-2.5 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark
+          absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-xl border border-gray-200 bg-white p-2.5 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark
           transition-all duration-300 ease-out origin-top-right
           ${
             isOpen
@@ -35,16 +68,51 @@ export default function UserDropdown() {
           }
         `}
       >
+        {/* User Profile Section with Active Status */}
+        <div className="flex items-center gap-3 px-3 py-3 border-b border-gray-200 dark:border-gray-800">
+          <div className="relative flex-shrink-0">
+            <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-blue-500/20 dark:ring-blue-400/20">
+              <img src="/images/user/usr.png" alt="User" className="w-full h-full object-cover" />
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5">
+              <span className={`absolute inset-0 rounded-full border-2 border-white dark:border-gray-900 transition-all duration-300 ${
+                isActive 
+                  ? "bg-green-500 shadow-lg shadow-green-500/50" 
+                  : "bg-gray-400"
+              }`} />
+              {isActive && (
+                <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
+              )}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+              John Doe
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              john@example.com
+            </p>
+            <div className="flex items-center gap-1.5 mt-1">
+              {/* <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                isActive ? "bg-green-500 animate-pulse" : "bg-gray-400"
+              }`} /> */}
+              {/* <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
+                {isActive ? "● Active Now" : "● Offline"}
+              </span> */}
+            </div>
+          </div>
+        </div>
+
         <ul className="flex flex-col gap-1 pt-3 pb-2.5 border-b border-gray-200 dark:border-gray-800">
           <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
               to="/profile"
-              className="flex items-center gap-3 px-3 py-1.5 text-sm font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 transition-all duration-200"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 transition-all duration-200 hover:pl-6 hover:bg-blue-50 dark:hover:bg-blue-950/30"
             >
               <svg
-                className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300 transition-all duration-200"
+                className="fill-gray-500 group-hover:fill-blue-600 dark:fill-gray-400 dark:group-hover:fill-blue-400 transition-all duration-200 group-hover:scale-110"
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
@@ -58,16 +126,18 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              <span className="group-hover:translate-x-0.5 transition-transform duration-200">Edit Profile</span>
             </DropdownItem>
           </li>
+          
         </ul>
+        
         <Link
           to="/Login"
-          className="flex items-center gap-3 px-3 py-1.5 mt-2.5 text-sm font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 transition-all duration-200"
+          className="flex items-center gap-3 px-3 py-2 mt-2.5 text-sm font-medium text-red-600 dark:text-red-400 rounded-lg group text-theme-sm hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-200 hover:pl-6"
         >
           <svg
-            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300 transition-all duration-200"
+            className="fill-red-500 group-hover:fill-red-600 dark:fill-red-400 dark:group-hover:fill-red-300 transition-all duration-200 group-hover:scale-110 group-hover:rotate-6"
             width="20"
             height="20"
             viewBox="0 0 24 24"
@@ -81,7 +151,7 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Log out
+          <span className="group-hover:translate-x-0.5 transition-transform duration-200">Log Out</span>
         </Link>
       </div>
     </div>

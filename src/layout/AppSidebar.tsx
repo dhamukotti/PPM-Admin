@@ -26,6 +26,11 @@ const navItems: NavItem[] = [
     name: "FeedbackList",
     path: "/FeedbackList",
   },
+   {
+    icon: <FeedbackIcon />,
+    name: "Onboarding",
+    path: "/Onboarding",
+  },
 ];
 
 const othersItems: NavItem[] = [

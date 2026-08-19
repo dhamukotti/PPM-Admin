@@ -22,7 +22,7 @@ import Payment from "./pages/Payment/Payment";
 import FeedbackList from "./pages/Feedback/FeedbackList";
 import ForgotPassword from "./pages/Forgotpassword/ForgotPassword";
 import VerifyEmail from "./pages/verify-email/VerifyEmail";
-
+import OnboardingAndDashboard from "./pages/OnboardingPage/OnboardingPage";
 export default function App() {
   
   return (
@@ -37,7 +37,8 @@ export default function App() {
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
              <Route path="/Payment" element={<Payment />} />
-                          <Route path="/FeedbackList" element={<FeedbackList />} />
+              <Route path="/FeedbackList" element={<FeedbackList />} />
+                            <Route path="/Onboarding" element={<OnboardingAndDashboard />} />
 
 
             
