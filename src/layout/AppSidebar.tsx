@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router";
 // Assume these icons are imported from an icon library
 import {
   GridIcon,
+  UserIcon,
   PaymentIcon,FeedbackIcon
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -27,7 +28,7 @@ const navItems: NavItem[] = [
     path: "/FeedbackList",
   },
    {
-    icon: <FeedbackIcon />,
+    icon: <UserIcon />,
     name: "Onboarding",
     path: "/Onboarding",
   },

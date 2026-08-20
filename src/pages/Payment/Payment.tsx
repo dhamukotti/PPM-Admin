@@ -39,7 +39,7 @@ import { useTheme as useCustomTheme } from "../../context/ThemeContext";
 // Types
 // ---------------------------------------------------------------------------
 
-export type PaymentStatus = "pending" | "completed" | "processing";
+export type PaymentStatus = "pending" | "completed" | "cancelled" | "failed";
 
 export interface Payment {
   id: string;
@@ -67,13 +67,14 @@ const EMAILS = [
   "suresh@gmail.com", "ravi@gmail.com"
 ];
 
-const METHODS = ["Card", "UPI", "Bank transfer", "Wallet"];
+const METHODS = ["Card"];
 
 function randomStatus(): PaymentStatus {
   const roll = Math.random();
-  if (roll < 0.35) return "pending";
-  if (roll < 0.7) return "completed";
-  return "processing";
+  if (roll < 0.30) return "pending";
+  if (roll < 0.60) return "completed";
+  if (roll < 0.80) return "cancelled";
+  return "failed";
 }
 
 function generateMockPayments(count: number): Payment[] {
@@ -95,7 +96,7 @@ function generateMockPayments(count: number): Payment[] {
       amount: 1, // default amount for all users
       currency: "USD",
       status,
-      method: METHODS[i % METHODS.length],
+      method: METHODS[0],
       dueDate: due.toISOString(),
       paidDate: paid,
     };
@@ -122,19 +123,26 @@ const STATUS_CONFIG: Record<PaymentStatus, StatusConfigEntry> = {
     bg: "#fef3c7",
     darkBg: "#3d2e00",
   },
-  processing: {
-    label: "Processing",
-    icon: "lucide:loader-2",
-    color: "#1d4ed8",
-    bg: "#dbeafe",
-    darkBg: "#1e3a5f",
-  },
   completed: {
     label: "Completed",
     icon: "lucide:check-circle-2",
     color: "#047857",
     bg: "#dcfce7",
     darkBg: "#14291e",
+  },
+  cancelled: {
+    label: "Cancelled",
+    icon: "lucide:x-circle",
+    color: "#dc2626",
+    bg: "#fee2e2",
+    darkBg: "#7f1d1d",
+  },
+  failed: {
+    label: "Failed",
+    icon: "lucide:alert-circle",
+    color: "#b91c1c",
+    bg: "#fecaca",
+    darkBg: "#991b1b",
   },
 };
 
@@ -182,7 +190,6 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
             style={{
               fontSize: 14,
               color: cfg.color,
-              animation: status === "processing" ? "spin 1s linear infinite" : undefined,
             }}
           />
         }
@@ -204,10 +211,6 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
           "@keyframes glow-badge": {
             "0%, 100%": { boxShadow: "0 0 5px rgba(99,102,241,0.1)" },
             "50%": { boxShadow: "0 0 20px rgba(99,102,241,0.2)" },
-          },
-          "@keyframes spin": { 
-            from: { transform: "rotate(0deg)" }, 
-            to: { transform: "rotate(360deg)" } 
           },
         }}
       />
@@ -384,7 +387,7 @@ function SummaryCard({
   );
 }
 
-type StatusFilter = "all" | PaymentStatus;
+type StatusFilter = "all" | "pending" | "completed" | "cancelled" | "failed";
 
 function PaymentStatusContent() {
   const { theme } = useCustomTheme();
@@ -402,11 +405,17 @@ function PaymentStatusContent() {
   const summary = useMemo(() => {
     const pending = data.filter((p) => p.status === "pending");
     const completed = data.filter((p) => p.status === "completed");
+    const cancelled = data.filter((p) => p.status === "cancelled");
+    const failed = data.filter((p) => p.status === "failed");
     return {
       pendingCount: pending.length,
       pendingTotal: pending.reduce((sum, p) => sum + p.amount, 0),
       completedCount: completed.length,
       completedTotal: completed.reduce((sum, p) => sum + p.amount, 0),
+      cancelledCount: cancelled.length,
+      cancelledTotal: cancelled.reduce((sum, p) => sum + p.amount, 0),
+      failedCount: failed.length,
+      failedTotal: failed.reduce((sum, p) => sum + p.amount, 0),
       totalCount: data.length,
     };
   }, [data]);
@@ -614,7 +623,7 @@ function PaymentStatusContent() {
               "100%": { transform: "translateY(0)", opacity: 1 },
             },
           }}>
-            Track pending, processing, and completed payments across your users.
+            Track pending, completed, cancelled, and failed payments across your users.
           </Typography>
         </Box>
 
@@ -726,7 +735,7 @@ function PaymentStatusContent() {
               rowGap: 0.5,
             }}
           >
-            {(["all", "pending", "processing", "completed"] as StatusFilter[]).map((s, index) => (
+            {(["all", "pending", "completed", "cancelled", "failed"] as StatusFilter[]).map((s, index) => (
               <Grow in timeout={300 + index * 150} key={s}>
                 <Chip
                   label={s.charAt(0).toUpperCase() + s.slice(1)}
