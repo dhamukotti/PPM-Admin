@@ -107,6 +107,7 @@ const HtmlEditor = ({
         width: '100%'
       }}
       {...props}
+      
     />
   );
 };

@@ -43,6 +43,8 @@ import {
   Slide,
   Grow,
   Zoom,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useTheme as useCustomTheme } from "../../context/ThemeContext";
 import MyEditor from '../Htmleditor/MyEditor';
@@ -251,10 +253,10 @@ function SummaryCard({
           border: "1px solid",
           borderColor: isDark ? "#1a2744" : "#e2e8f0",
           borderRadius: "14px",
-          p: 2,
+          p: { xs: 1.5, sm: 2 },
           display: "flex",
           alignItems: "center",
-          gap: 1.5,
+          gap: { xs: 1, sm: 1.5 },
           height: "100%",
           bgcolor: isDark ? "#0F1828" : "#ffffff",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -299,8 +301,8 @@ function SummaryCard({
       >
         <Box
           sx={{
-            width: 40,
-            height: 40,
+            width: { xs: 32, sm: 40 },
+            height: { xs: 32, sm: 40 },
             borderRadius: "10px",
             bgcolor: `${accent}1F`,
             display: "flex",
@@ -319,11 +321,11 @@ function SummaryCard({
             },
           }}
         >
-          <Icon icon={icon} style={{ fontSize: 20, color: accent }} />
+          <Icon icon={icon} style={{ fontSize: { xs: 16, sm: 20 } as any, color: accent }} />
         </Box>
         <Box sx={{ minWidth: 0 }}>
           <Typography sx={{ 
-            fontSize: 22, 
+            fontSize: { xs: 18, sm: 22 },
             fontWeight: 700, 
             color: isDark ? "#ffffff" : "#0f172a", 
             lineHeight: 1.1,
@@ -337,7 +339,7 @@ function SummaryCard({
             {value}
           </Typography>
           <Typography sx={{ 
-            fontSize: 12, 
+            fontSize: { xs: 10, sm: 12 },
             color: isDark ? "#9ca3af" : "#475569", 
             mt: 0.3,
             animation: "fade-in-text 0.8s ease-out",
@@ -350,7 +352,7 @@ function SummaryCard({
           </Typography>
           {sub && (
             <Typography sx={{ 
-              fontSize: 11, 
+              fontSize: { xs: 9, sm: 11 },
               color: isDark ? "#6b7280" : "#94a3b8", 
               mt: 0.2 
             }}>
@@ -374,7 +376,6 @@ function SummaryCard({
             },
           }}
         />
-        {/* Animated shimmer overlay */}
         <Box
           sx={{
             position: "absolute",
@@ -445,24 +446,17 @@ function ReplyDialog({
             "0%": { transform: "scale(0.8) rotate(-5deg)", opacity: 0 },
             "100%": { transform: "scale(1) rotate(0deg)", opacity: 1 },
           },
+          margin: { xs: 1, sm: 2, md: 3 },
+          maxHeight: { xs: "95vh", sm: "90vh" },
         }
       }}
     >
-      <DialogTitle sx={{ pb: 1 }}>
+      <DialogTitle sx={{ pb: 1, pr: { xs: 6, sm: 6 } }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Zoom in timeout={800}>
             <Avatar 
               sx={{ 
                 bgcolor: "primary.main",
-                // animation: "spin-avatar 4s linear infinite, glow-avatar 2s ease-in-out infinite",
-                // "@keyframes spin-avatar": {
-                //   "0%": { transform: "rotate(0deg)" },
-                //   "100%": { transform: "rotate(360deg)" },
-                // },
-                // "@keyframes glow-avatar": {
-                //   "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
-                //   "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
-                // },
               }}
             >
               {feedback.userName.charAt(0)}
@@ -472,6 +466,7 @@ function ReplyDialog({
             <Typography sx={{ 
               color: isDark ? "#ffffff" : "#0f172a",
               animation: "slide-in-right 0.5s ease-out",
+              fontSize: { xs: "0.9rem", sm: "1rem" },
               "@keyframes slide-in-right": {
                 "0%": { transform: "translateX(-20px)", opacity: 0 },
                 "100%": { transform: "translateX(0)", opacity: 1 },
@@ -479,18 +474,31 @@ function ReplyDialog({
             }}>
               Reply to {feedback.userName}
             </Typography>
-            <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+            <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569", display: "block" }}>
               {feedback.userEmail}
             </Typography>
           </Box>
         </Box>
       </DialogTitle>
+      {/* Close Icon - Top Right */}
+      <IconButton
+        onClick={onClose}
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          color: isDark ? "red" : "red",
+          
+        }}
+      >
+        <Icon icon="lucide:x" style={{ fontSize: 20 }} />
+      </IconButton>
       <Divider sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0" }} />
-      <DialogContent sx={{ mt: 2 }}>
+      <DialogContent sx={{ mt: 2, px: { xs: 1, sm: 2, md: 3 } }}>
         <Paper
           elevation={0}
           sx={{
-            p: 2,
+            p: { xs: 1.5, sm: 2 },
             bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
             borderRadius: 2,
             mb: 3,
@@ -508,43 +516,24 @@ function ReplyDialog({
           </Typography>
           <Typography sx={{ 
             color: isDark ? "#ffffff" : "#0f172a",
-            animation: "typewriter 1s steps(40, end)",
-            "@keyframes typewriter": {
-              "0%": { width: "0", opacity: 0 },
-              "100%": { width: "100%", opacity: 1 },
-            },
-            overflow: "hidden",
-            whiteSpace: "nowrap",
+            wordBreak: "break-word",
           }}>
             {feedback.message}
           </Typography>
         </Paper>
- <MyEditor
-        placeholder="Write your content here..."
-        height="400"
-        onChange={handleChange}
-        setContent={content}
-        defaultValue="<p>Initial content</p>"
-      />
-      
+        <MyEditor
+          placeholder="Write your content here..."
+          height="400"
+          onChange={handleChange}
+          setContent={content}
+          defaultValue="<p>Initial content</p>"
+        />
       </DialogContent>
-      <DialogActions sx={{ p: 2, pt: 0 }}>
-        <Button 
-          onClick={onClose} 
-          sx={{ 
-            color: isDark ? "#9ca3af" : "#475569",
-            transition: "all 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05) rotate(-3deg)",
-            },
-          }}
-        >
-          Cancel
-        </Button>
+      <DialogActions sx={{ p: { xs: 1.5, sm: 2 }, pt: 0, flexWrap: "wrap", gap: 1 }}>
+      
         <Button
           variant="contained"
           onClick={handleSubmit}
-        //  disabled={!replyText.trim()}
           endIcon={<Icon icon="lucide:send" />}
           sx={{
             borderRadius: 2,
@@ -584,7 +573,7 @@ function ViewFeedbackDialog({
   const [replyText, setReplyText] = useState("");
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
-const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>('');
 
   const handleChange = (newContent: string) => {
     setContent(newContent);
@@ -624,34 +613,31 @@ const [content, setContent] = useState<string>('');
             "0%": { transform: "scale(0.7) rotate(3deg)", opacity: 0 },
             "100%": { transform: "scale(1) rotate(0deg)", opacity: 1 },
           },
+          margin: { xs: 1, sm: 2, md: 3 },
+          maxHeight: { xs: "95vh", sm: "90vh" },
         }
       }}
     >
-      <DialogTitle>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <DialogTitle sx={{ pr: { xs: 6, sm: 8 } }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", minWidth: 0 }}>
             <Zoom in timeout={800}>
               <Avatar 
                 sx={{ 
                   bgcolor: "primary.main",
-                  animation: "pulse-avatar 2s ease-in-out infinite, glow-avatar 2s ease-in-out infinite",
-                  "@keyframes pulse-avatar": {
-                    "0%, 100%": { transform: "scale(1)" },
-                    "50%": { transform: "scale(1.1)" },
-                  },
-                  "@keyframes glow-avatar": {
-                    "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
-                    "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
-                  },
+                  width: { xs: 36, sm: 40 },
+                  height: { xs: 36, sm: 40 },
                 }}
               >
                 {feedback.userName.charAt(0)}
               </Avatar>
             </Zoom>
-            <Box>
+            <Box sx={{ minWidth: 0 }}>
               <Typography sx={{ 
                 color: isDark ? "#ffffff" : "#0f172a",
                 animation: "fade-in 0.5s ease-out",
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+                wordBreak: "break-word",
                 "@keyframes fade-in": {
                   "0%": { opacity: 0 },
                   "100%": { opacity: 1 },
@@ -659,12 +645,12 @@ const [content, setContent] = useState<string>('');
               }}>
                 {feedback.userName}
               </Typography>
-              <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+              <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569", display: "block" }}>
                 {feedback.userEmail}
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexShrink: 0 }}>
             <StatusBadge status={feedback.status} />
             <Tooltip title={feedback.status === "open" ? "Close Feedback" : "Reopen Feedback"}>
               <IconButton
@@ -688,16 +674,31 @@ const [content, setContent] = useState<string>('');
           </Box>
         </Box>
       </DialogTitle>
+      {/* Close Icon - Top Right */}
+      <IconButton
+        onClick={onClose}
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          color: isDark ? "red" : "red",
+          // transition: "all 0.3s ease",
+          zIndex: 1,
+         
+        }}
+      >
+        <Icon icon="lucide:x" style={{ fontSize: 20 }} />
+      </IconButton>
       <Divider sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0" }} />
-      <DialogContent>
-        <Box sx={{ mb: 4}}>
+      <DialogContent sx={{ px: { xs: 1, sm: 2, md: 3 } }}>
+        <Box sx={{ mb: 4 }}>
           <Typography variant="subtitle2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
             Message
           </Typography>
           <Paper
             elevation={0}
             sx={{
-              p: 2,
+              p: { xs: 1.5, sm: 2 },
               bgcolor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.02)",
               borderRadius: 2,
               borderLeft: "3px solid",
@@ -709,7 +710,7 @@ const [content, setContent] = useState<string>('');
               },
             }}
           >
-            <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+            <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a", wordBreak: "break-word" }}>
               {feedback.message}
             </Typography>
           </Paper>
@@ -720,13 +721,13 @@ const [content, setContent] = useState<string>('');
             <Typography variant="subtitle2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
               Replies ({feedback.replies.length})
             </Typography>
-            <Stack spacing={1}>
+            <Stack spacing={1} sx={{ maxHeight: { xs: 200, sm: 250 }, overflowY: "auto" }}>
               {feedback.replies.map((reply, index) => (
                 <Grow in timeout={300 + index * 150} key={reply.id}>
                   <Paper
                     elevation={0}
                     sx={{
-                      p: 2,
+                      p: { xs: 1.5, sm: 2 },
                       bgcolor: isDark ? "rgba(25,118,210,0.1)" : "rgba(25,118,210,0.05)",
                       borderRadius: 2,
                       borderLeft: "3px solid",
@@ -743,15 +744,15 @@ const [content, setContent] = useState<string>('');
                       },
                     }}
                   >
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                      <Typography variant="subtitle2" color="primary">
+                    <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 0.5 }}>
+                      <Typography variant="subtitle2" color="primary" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
                         {reply.repliedBy}
                       </Typography>
                       <Typography variant="caption" sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
                         {formatDate(reply.timestamp)}
                       </Typography>
                     </Box>
-                    <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a" }}>
+                    <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a", wordBreak: "break-word", fontSize: { xs: "0.8rem", sm: "0.875rem" } }}>
                       {reply.message}
                     </Typography>
                   </Paper>
@@ -762,53 +763,20 @@ const [content, setContent] = useState<string>('');
         )}
 
         <Box>
-          <Typography variant="subtitle2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
-            Add Reply
-          </Typography>
-                <MyEditor
-        placeholder="Write your content here..."
-        height="400"
-        onChange={handleChange}
-        setContent={content}
-        defaultValue="<p>Initial content</p>"
-      />
-          {/* <TextField
-            fullWidth
-            multiline
-            rows={2}
-            placeholder="Type your reply..."
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            variant="outlined"
-            size="small"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                bgcolor: isDark ? "#0F1828" : "#ffffff",
-                transition: "all 0.4s ease",
-                "&:focus-within": {
-                  transform: "scale(1.02)",
-                  boxShadow: "0 4px 20px rgba(99,102,241,0.15)",
-                },
-                "& fieldset": {
-                  borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                },
-                "&:hover fieldset": {
-                  borderColor: isDark ? "#2a3a5c" : "#94a3b8",
-                },
-              },
-              "& .MuiInputBase-input": {
-                color: isDark ? "#ffffff" : "#0f172a",
-              },
-            }}
-          /> */}
+          <MyEditor
+            placeholder="Write your content here..."
+            height="400"
+            onChange={handleChange}
+            setContent={content}
+            defaultValue="<p>Initial content</p>"
+          />
           <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
+            
             <Button
               variant="contained"
               size="small"
               endIcon={<Icon icon="lucide:send" />}
               onClick={handleReply}
-          //    disabled={!replyText.trim()}
               sx={{
                 borderRadius: 2,
                 textTransform: "none",
@@ -824,7 +792,7 @@ const [content, setContent] = useState<string>('');
           </Box>
         </Box>
       </DialogContent>
-      <DialogActions>
+      {/* <DialogActions sx={{ p: { xs: 1.5, sm: 2 } }}>
         <Button 
           onClick={onClose} 
           sx={{ 
@@ -837,7 +805,7 @@ const [content, setContent] = useState<string>('');
         >
           Close
         </Button>
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
   );
 }
@@ -851,6 +819,9 @@ type StatusFilter = "all" | FeedbackStatus;
 function FeedbackContent() {
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
+  const muiTheme = useTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down('sm'));
+  
   const [data, setData] = useState<FeedbackItem[]>(() => generateMockFeedbacks(10));
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -958,10 +929,10 @@ function FeedbackContent() {
               <Avatar 
                 sx={{ 
                   bgcolor: avatarColor, 
-                  width: 34, 
-                  height: 34, 
+                  width: { xs: 28, sm: 34 }, 
+                  height: { xs: 28, sm: 34 }, 
                   fontWeight: 700, 
-                  fontSize: 12,
+                  fontSize: { xs: 10, sm: 12 },
                   transition: "all 0.4s ease",
                   "&:hover": {
                     transform: "scale(1.3) rotate(15deg)",
@@ -973,20 +944,22 @@ function FeedbackContent() {
               </Avatar>
               <Box sx={{ minWidth: 0 }}>
                 <Typography noWrap sx={{ 
-                  fontSize: 13.5, 
+                  fontSize: { xs: 12, sm: 13.5 }, 
                   fontWeight: 600, 
                   color: isDark ? "#ffffff" : "#0f172a",
                   transition: "color 0.3s ease",
                 }}>
                   {feedback.userName}
                 </Typography>
-                <Typography noWrap sx={{ 
-                  fontSize: 12, 
-                  color: isDark ? "#9ca3af" : "#475569",
-                  transition: "color 0.3s ease",
-                }}>
-                  {feedback.userEmail}
-                </Typography>
+                {!isMobile && (
+                  <Typography noWrap sx={{ 
+                    fontSize: { xs: 10, sm: 12 }, 
+                    color: isDark ? "#9ca3af" : "#475569",
+                    transition: "color 0.3s ease",
+                  }}>
+                    {feedback.userEmail}
+                  </Typography>
+                )}
               </Box>
             </Stack>
           );
@@ -997,9 +970,9 @@ function FeedbackContent() {
         header: "Feedback",
         cell: ({ row }) => (
           <Typography noWrap sx={{ 
-            fontSize: 13, 
+            fontSize: { xs: 11, sm: 13 }, 
             color: isDark ? "#9ca3af" : "#475569",
-            maxWidth: 250,
+            maxWidth: { xs: 100, sm: 200, md: 250 },
             transition: "all 0.3s ease",
             "&:hover": {
               color: isDark ? "#ffffff" : "#0f172a",
@@ -1022,7 +995,7 @@ function FeedbackContent() {
         header: "Date",
         cell: ({ row }) => (
           <Typography sx={{ 
-            fontSize: 13, 
+            fontSize: { xs: 10, sm: 13 }, 
             color: isDark ? "#9ca3af" : "#475569",
             transition: "color 0.3s ease",
           }}>
@@ -1044,13 +1017,14 @@ function FeedbackContent() {
                   sx={{
                     color: isDark ? "#9ca3af" : "#475569",
                     transition: "all 0.4s ease",
+                    padding: { xs: 0.5, sm: 1 },
                     "&:hover": {
                       transform: "scale(1.3) rotate(-10deg)",
                       bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
                     },
                   }}
                 >
-                  <Icon icon="lucide:eye" style={{ fontSize: 18 }} />
+                  <Icon icon="lucide:eye" style={{ fontSize: { xs: 16, sm: 18 } as any }} />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Reply">
@@ -1060,40 +1034,44 @@ function FeedbackContent() {
                   sx={{
                     color: isDark ? "#9ca3af" : "#475569",
                     transition: "all 0.4s ease",
+                    padding: { xs: 0.5, sm: 1 },
                     "&:hover": {
                       transform: "scale(1.3) rotate(15deg)",
                       bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
                     },
                   }}
                 >
-                  <Icon icon="lucide:reply" style={{ fontSize: 18 }} />
+                  <Icon icon="lucide:reply" style={{ fontSize: { xs: 16, sm: 18 } as any }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={feedback.status === "open" ? "Close Feedback" : "Reopen Feedback"}>
-                <IconButton
-                  size="small"
-                  onClick={() => handleStatusChange(feedback.id, feedback.status === "open" ? "closed" : "open")}
-                  sx={{
-                    color: feedback.status === "open" ? "#16a34a" : "#d97706",
-                    transition: "all 0.4s ease",
-                    "&:hover": {
-                      transform: "scale(1.3) rotate(180deg)",
-                      bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.15)" : "rgba(217,119,6,0.15)",
-                    },
-                  }}
-                >
-                  <Icon 
-                    icon={feedback.status === "open" ? "lucide:check-circle" : "lucide:clock"} 
-                    style={{ fontSize: 18 }} 
-                  />
-                </IconButton>
-              </Tooltip>
+              {!isMobile && (
+                <Tooltip title={feedback.status === "open" ? "Close Feedback" : "Reopen Feedback"}>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleStatusChange(feedback.id, feedback.status === "open" ? "closed" : "open")}
+                    sx={{
+                      color: feedback.status === "open" ? "#16a34a" : "#d97706",
+                      transition: "all 0.4s ease",
+                      padding: { xs: 0.5, sm: 1 },
+                      "&:hover": {
+                        transform: "scale(1.3) rotate(180deg)",
+                        bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.15)" : "rgba(217,119,6,0.15)",
+                      },
+                    }}
+                  >
+                    <Icon 
+                      icon={feedback.status === "open" ? "lucide:check-circle" : "lucide:clock"} 
+                      style={{ fontSize: { xs: 16, sm: 18 } as any }} 
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Stack>
           );
         },
       },
     ],
-    [isDark]
+    [isDark, isMobile]
   );
 
   const table = useReactTable({
@@ -1106,11 +1084,500 @@ function FeedbackContent() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 9 } },
+    initialState: { pagination: { pageSize: isMobile ? 5 : 9 } },
   });
 
   const gridRows = table.getRowModel().rows;
 
+  // Mobile view - Card based layout for small screens
+  if (isMobile) {
+    return (
+      <Box sx={{ 
+        minHeight: "100vh", 
+        bgcolor: isDark ? "#0F1828" : "#f8fafc",
+        position: "relative",
+        overflow: "hidden",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: -200,
+          right: -200,
+          width: 400,
+          height: 400,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.05), transparent 70%)",
+          animation: "float-bg 20s ease-in-out infinite",
+          "@keyframes float-bg": {
+            "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+            "33%": { transform: "translate(-50px, -30px) scale(1.2)" },
+            "66%": { transform: "translate(50px, 20px) scale(0.8)" },
+          },
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          bottom: -200,
+          left: -200,
+          width: 400,
+          height: 400,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(16,185,129,0.05), transparent 70%)",
+          animation: "float-bg-reverse 25s ease-in-out infinite",
+          "@keyframes float-bg-reverse": {
+            "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+            "33%": { transform: "translate(50px, 30px) scale(1.3)" },
+            "66%": { transform: "translate(-50px, -20px) scale(0.7)" },
+          },
+        },
+      }}>
+        <Box sx={{ 
+          maxWidth: 1440, 
+          mx: "auto", 
+          px: { xs: 1.5, sm: 3, md: 4 }, 
+          py: { xs: 2, md: 4 },
+          position: "relative",
+          zIndex: 1,
+        }}>
+          {/* Header */}
+          <Box sx={{ mb: 2 }}>
+            <Typography sx={{ 
+              fontSize: { xs: 18, sm: 20 }, 
+              fontWeight: 700, 
+              color: isDark ? "#ffffff" : "#0f172a",
+              animation: "fade-in-down 0.8s ease-out",
+              "@keyframes fade-in-down": {
+                "0%": { transform: "translateY(-30px) scale(0.9)", opacity: 0 },
+                "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
+              },
+              background: isDark ? "none" : "linear-gradient(90deg, #0f172a, #6366f1, #0f172a)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: isDark ? "none" : "text",
+              WebkitTextFillColor: isDark ? "#ffffff" : "transparent",
+            }}>
+              Feedback Management
+            </Typography>
+            <Typography sx={{ 
+              fontSize: { xs: 12, sm: 13.5 }, 
+              color: isDark ? "#9ca3af" : "#475569", 
+              mt: 0.2,
+              animation: "fade-in-up 0.8s ease-out",
+              "@keyframes fade-in-up": {
+                "0%": { transform: "translateY(20px)", opacity: 0 },
+                "100%": { transform: "translateY(0)", opacity: 1 },
+              },
+            }}>
+              Review and respond to customer feedback
+            </Typography>
+          </Box>
+
+          {/* Summary cards */}
+          <Grid container spacing={1.5} sx={{ mb: 2 }}>
+            <Grid item xs={4}>
+              <SummaryCard
+                icon="lucide:message-square"
+                label="Total"
+                value={summary.totalCount.toString()}
+                accent="#6366f1"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <SummaryCard
+                icon="lucide:clock"
+                label="Open"
+                value={summary.openCount.toString()}
+                accent="#d97706"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <SummaryCard
+                icon="lucide:check-circle-2"
+                label="Closed"
+                value={summary.closedCount.toString()}
+                accent="#16a34a"
+              />
+            </Grid>
+          </Grid>
+
+          {/* Toolbar */}
+          <Stack
+            direction="column"
+            spacing={1.5}
+            sx={{ 
+              mb: 3,
+              animation: "fade-in 0.6s ease-out",
+              "@keyframes fade-in": {
+                "0%": { opacity: 0, transform: "scale(0.95)" },
+                "100%": { opacity: 1, transform: "scale(1)" },
+              },
+            }}
+          >
+            <TextField
+              size="small"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search..."
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": { 
+                  borderRadius: "10px", 
+                  bgcolor: isDark ? "#0F1828" : "#ffffff",
+                  transition: "all 0.4s ease",
+                  "&:focus-within": {
+                    transform: "scale(1.03)",
+                    boxShadow: "0 8px 30px rgba(99,102,241,0.2)",
+                  },
+                  "& fieldset": {
+                    borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                    transition: "border-color 0.3s ease",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: isDark ? "#2a3a5c" : "#94a3b8",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  fontSize: "0.875rem",
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Icon 
+                      icon="lucide:search" 
+                      style={{ 
+                        fontSize: 16, 
+                        color: isDark ? "#6b7280" : "#94a3b8",
+                      }} 
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Stack
+              direction="row"
+              spacing={0.5}
+              sx={{
+                border: "1px solid",
+                borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                borderRadius: "10px",
+                p: 0.5,
+                bgcolor: isDark ? "#0F1828" : "#ffffff",
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { height: 0 },
+              }}
+            >
+              {(["all", "open", "closed"] as StatusFilter[]).map((s, index) => (
+                <Grow in timeout={300 + index * 150} key={s}>
+                  <Chip
+                    label={s.charAt(0).toUpperCase() + s.slice(1)}
+                    onClick={() => setStatusFilter(s)}
+                    size="small"
+                    sx={{
+                      fontSize: 11,
+                      fontWeight: 500,
+                      borderRadius: "8px",
+                      bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : "transparent",
+                      color: statusFilter === s ? (isDark ? "#0F1828" : "#ffffff") : (isDark ? "#9ca3af" : "#475569"),
+                      transition: "all 0.4s ease",
+                      flexShrink: 0,
+                      "&:hover": {
+                        transform: "scale(1.08)",
+                        bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : (isDark ? "#1a2744" : "#f1f5f9"),
+                      },
+                    }}
+                  />
+                </Grow>
+              ))}
+            </Stack>
+          </Stack>
+
+          {/* Mobile Card View */}
+          {gridRows.length === 0 ? (
+            <Zoom in timeout={600}>
+              <Card
+                elevation={0}
+                sx={{
+                  border: "1px solid",
+                  borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                  borderRadius: "14px",
+                  py: 6,
+                  textAlign: "center",
+                  bgcolor: isDark ? "#0F1828" : "#ffffff",
+                }}
+              >
+                <Typography sx={{ 
+                  fontSize: 13.5, 
+                  color: isDark ? "#6b7280" : "#94a3b8" 
+                }}>
+                  No feedback matches your search or filters.
+                </Typography>
+              </Card>
+            </Zoom>
+          ) : (
+            <Stack spacing={1.5}>
+              {gridRows.map((row, index) => {
+                const feedback = row.original;
+                const avatarColor = getAvatarColor(feedback.userName);
+                const initials = feedback.userName
+                  .split(" ")
+                  .map((p) => p[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
+                return (
+                  <Fade in timeout={300 + index * 80} key={row.id}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        border: "1px solid",
+                        borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                        borderRadius: "14px",
+                        p: 1.5,
+                        bgcolor: isDark ? "#0F1828" : "#ffffff",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "scale(1.02)",
+                          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                        },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0 }}>
+                          <Avatar 
+                            sx={{ 
+                              bgcolor: avatarColor, 
+                              width: 32, 
+                              height: 32, 
+                              fontWeight: 700, 
+                              fontSize: 11,
+                            }}
+                          >
+                            {initials}
+                          </Avatar>
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography noWrap sx={{ 
+                              fontSize: 13, 
+                              fontWeight: 600, 
+                              color: isDark ? "#ffffff" : "#0f172a",
+                            }}>
+                              {feedback.userName}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <StatusBadge status={feedback.status} />
+                      </Box>
+                      
+                      <Typography sx={{ 
+                        fontSize: 12, 
+                        color: isDark ? "#9ca3af" : "#475569",
+                        mb: 1,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}>
+                        {feedback.message}
+                      </Typography>
+                      
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Typography sx={{ 
+                          fontSize: 10, 
+                          color: isDark ? "#6b7280" : "#94a3b8",
+                        }}>
+                          {formatDate(feedback.timestamp)}
+                        </Typography>
+                        <Stack direction="row" spacing={0.5}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenViewDialog(feedback)}
+                            sx={{
+                              color: isDark ? "#9ca3af" : "#475569",
+                              transition: "all 0.3s ease",
+                              padding: 0.5,
+                              "&:hover": {
+                                transform: "scale(1.2)",
+                                bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                              },
+                            }}
+                          >
+                            <Icon icon="lucide:eye" style={{ fontSize: 16 }} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenReplyDialog(feedback)}
+                            sx={{
+                              color: isDark ? "#9ca3af" : "#475569",
+                              transition: "all 0.3s ease",
+                              padding: 0.5,
+                              "&:hover": {
+                                transform: "scale(1.2)",
+                                bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                              },
+                            }}
+                          >
+                            <Icon icon="lucide:reply" style={{ fontSize: 16 }} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleStatusChange(feedback.id, feedback.status === "open" ? "closed" : "open")}
+                            sx={{
+                              color: feedback.status === "open" ? "#16a34a" : "#d97706",
+                              transition: "all 0.3s ease",
+                              padding: 0.5,
+                              "&:hover": {
+                                transform: "scale(1.2) rotate(180deg)",
+                                bgcolor: feedback.status === "open" ? "rgba(22,163,74,0.15)" : "rgba(217,119,6,0.15)",
+                              },
+                            }}
+                          >
+                            <Icon 
+                              icon={feedback.status === "open" ? "lucide:check-circle" : "lucide:clock"} 
+                              style={{ fontSize: 16 }} 
+                            />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                    </Card>
+                  </Fade>
+                );
+              })}
+            </Stack>
+          )}
+
+          {/* Pagination */}
+          <Stack 
+            direction="row" 
+            alignItems="center" 
+            justifyContent="space-between" 
+            sx={{ 
+              pt: 2,
+              animation: "fade-in-up 0.8s ease-out",
+              "@keyframes fade-in-up": {
+                "0%": { transform: "translateY(30px)", opacity: 0 },
+                "100%": { transform: "translateY(0)", opacity: 1 },
+              },
+            }}
+          >
+            <Typography sx={{ 
+              fontSize: { xs: 10, sm: 12 }, 
+              color: isDark ? "#9ca3af" : "#475569",
+              transition: "color 0.3s ease",
+            }}>
+              {table.getState().pagination.pageIndex + 1} / {Math.max(table.getPageCount(), 1)}
+            </Typography>
+            <Stack direction="row" spacing={0.5}>
+              <IconButton
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                size="small"
+                sx={{ 
+                  border: "1px solid", 
+                  borderColor: isDark ? "#1a2744" : "#e2e8f0", 
+                  borderRadius: "8px",
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  transition: "all 0.4s ease",
+                  padding: 0.5,
+                  "&:hover:not(:disabled)": {
+                    transform: "scale(1.1) translateX(-2px)",
+                    bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                  },
+                  "&:active:not(:disabled)": {
+                    transform: "scale(0.9)",
+                  },
+                  "&.Mui-disabled": {
+                    color: isDark ? "#6b7280" : "#94a3b8",
+                  }
+                }}
+              >
+                <Icon icon="lucide:chevron-left" style={{ fontSize: 14 }} />
+              </IconButton>
+              <IconButton
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                size="small"
+                sx={{ 
+                  border: "1px solid", 
+                  borderColor: isDark ? "#1a2744" : "#e2e8f0", 
+                  borderRadius: "8px",
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  transition: "all 0.4s ease",
+                  padding: 0.5,
+                  "&:hover:not(:disabled)": {
+                    transform: "scale(1.1) translateX(2px)",
+                    bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+                  },
+                  "&:active:not(:disabled)": {
+                    transform: "scale(0.9)",
+                  },
+                  "&.Mui-disabled": {
+                    color: isDark ? "#6b7280" : "#94a3b8",
+                  }
+                }}
+              >
+                <Icon icon="lucide:chevron-right" style={{ fontSize: 14 }} />
+              </IconButton>
+            </Stack>
+          </Stack>
+        </Box>
+
+        {/* Dialogs */}
+        <ReplyDialog
+          open={replyDialogOpen}
+          onClose={() => {
+            setReplyDialogOpen(false);
+            setSelectedFeedback(null);
+          }}
+          onSubmit={handleReplySubmit}
+          feedback={selectedFeedback}
+        />
+
+        <ViewFeedbackDialog
+          open={viewDialogOpen}
+          onClose={() => {
+            setViewDialogOpen(false);
+            setSelectedFeedback(null);
+          }}
+          feedback={selectedFeedback}
+          onReply={handleReply}
+          onStatusChange={handleStatusChange}
+        />
+
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          TransitionComponent={Slide}
+          TransitionProps={{ timeout: 400 }}
+        >
+          <Zoom in timeout={500}>
+            <Alert
+              severity={snackbar.severity}
+              sx={{
+                borderRadius: 2,
+                bgcolor: isDark ? "#0F1828" : "#ffffff",
+                color: isDark ? "#ffffff" : "#0f172a",
+                border: "1px solid",
+                borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                animation: "slide-in-bottom 0.6s ease-out",
+                "@keyframes slide-in-bottom": {
+                  "0%": { transform: "translateY(100px) scale(0.8)", opacity: 0 },
+                  "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
+                },
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+              }}
+            >
+              {snackbar.message}
+            </Alert>
+          </Zoom>
+        </Snackbar>
+      </Box>
+    );
+  }
+
+  // Desktop/Tablet View - Original Table Layout
   return (
     <Box sx={{ 
       minHeight: "100vh", 
@@ -1161,7 +1628,7 @@ function FeedbackContent() {
         {/* Header */}
         <Box sx={{ mb: 3 }}>
           <Typography sx={{ 
-            fontSize: 20, 
+            fontSize: { xs: 18, sm: 20 }, 
             fontWeight: 700, 
             color: isDark ? "#ffffff" : "#0f172a",
             animation: "fade-in-down 0.8s ease-out, shimmer-text 3s ease-in-out infinite",
@@ -1181,7 +1648,7 @@ function FeedbackContent() {
             Feedback Management
           </Typography>
           <Typography sx={{ 
-            fontSize: 13.5, 
+            fontSize: { xs: 12, sm: 13.5 }, 
             color: isDark ? "#9ca3af" : "#475569", 
             mt: 0.4,
             animation: "fade-in-up 0.8s ease-out",
@@ -1299,7 +1766,7 @@ function FeedbackContent() {
                   onClick={() => setStatusFilter(s)}
                   size="small"
                   sx={{
-                    fontSize: 12,
+                    fontSize: { xs: 10, sm: 12 },
                     fontWeight: 500,
                     borderRadius: "8px",
                     bgcolor: statusFilter === s ? (isDark ? "#ffffff" : "#0f172a") : "transparent",
@@ -1355,9 +1822,10 @@ function FeedbackContent() {
                 "0%": { transform: "translateY(40px) scale(0.95)", opacity: 0 },
                 "100%": { transform: "translateY(0) scale(1)", opacity: 1 },
               },
+              overflowX: "auto",
             }}
           >
-            <Table size="small">
+            <Table size="small" sx={{ minWidth: { xs: 500, sm: 600, md: 700 } }}>
               <TableHead>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -1365,12 +1833,13 @@ function FeedbackContent() {
                       <TableCell
                         key={header.id}
                         sx={{
-                          fontSize: 12,
+                          fontSize: { xs: 10, sm: 12 },
                           fontWeight: 600,
                           color: isDark ? "#9ca3af" : "#475569",
                           borderColor: isDark ? "#1a2744" : "#e2e8f0",
                           whiteSpace: "nowrap",
                           transition: "color 0.3s ease",
+                          padding: { xs: "8px 6px", sm: "10px 12px" },
                           "&:hover": {
                             color: isDark ? "#ffffff" : "#0f172a",
                           },
@@ -1403,7 +1872,8 @@ function FeedbackContent() {
                           key={cell.id}
                           sx={{
                             borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                            py: 1.2,
+                            py: { xs: 0.8, sm: 1.2 },
+                            px: { xs: 0.5, sm: 1 },
                           }}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -1429,10 +1899,12 @@ function FeedbackContent() {
               "0%": { transform: "translateY(30px)", opacity: 0 },
               "100%": { transform: "translateY(0)", opacity: 1 },
             },
+            flexWrap: "wrap",
+            gap: 1,
           }}
         >
           <Typography sx={{ 
-            fontSize: 12, 
+            fontSize: { xs: 10, sm: 12 }, 
             color: isDark ? "#9ca3af" : "#475569",
             transition: "color 0.3s ease",
           }}>
@@ -1450,6 +1922,7 @@ function FeedbackContent() {
                 borderRadius: "8px",
                 color: isDark ? "#ffffff" : "#0f172a",
                 transition: "all 0.4s ease",
+                padding: { xs: 0.5, sm: 1 },
                 "&:hover:not(:disabled)": {
                   transform: "scale(1.15) translateX(-4px)",
                   bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
@@ -1463,7 +1936,7 @@ function FeedbackContent() {
                 }
               }}
             >
-              <Icon icon="lucide:chevron-left" style={{ fontSize: 16 }} />
+              <Icon icon="lucide:chevron-left" style={{ fontSize: { xs: 14, sm: 16 } as any }} />
             </IconButton>
             <IconButton
               onClick={() => table.nextPage()}
@@ -1475,6 +1948,7 @@ function FeedbackContent() {
                 borderRadius: "8px",
                 color: isDark ? "#ffffff" : "#0f172a",
                 transition: "all 0.4s ease",
+                padding: { xs: 0.5, sm: 1 },
                 "&:hover:not(:disabled)": {
                   transform: "scale(1.15) translateX(4px)",
                   bgcolor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
@@ -1488,7 +1962,7 @@ function FeedbackContent() {
                 }
               }}
             >
-              <Icon icon="lucide:chevron-right" style={{ fontSize: 16 }} />
+              <Icon icon="lucide:chevron-right" style={{ fontSize: { xs: 14, sm: 16 } as any }} />
             </IconButton>
           </Stack>
         </Stack>

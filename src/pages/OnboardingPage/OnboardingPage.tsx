@@ -1,7 +1,7 @@
 // DashboardPage.tsx - With #1878b2 Theme and Enhanced Professional Animations
 "use client";
 
-import { useState,  } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -29,7 +29,7 @@ import {
   TablePagination,
   useMediaQuery,
   useTheme,
-  
+  Container,
 } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { useTheme as useCustomTheme } from "../../context/ThemeContext";
@@ -403,8 +403,6 @@ USERS.forEach((user) => {
   user.projects = generateProjectsForUser(user.username, user.organization);
 });
 
-
-
 // ============================================================================
 // Main Dashboard Component
 // ============================================================================
@@ -430,7 +428,7 @@ export default function DashboardPage() {
   // Pagination states
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-
+console.log(selectedSprintTask);
   // Filter users based on search
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -462,7 +460,7 @@ export default function DashboardPage() {
       "in-progress": "#3b82f6",
       review: "#8b5cf6",
       done: "#22c55e",
-      active: PRIMARY_COLOR || selectedSprintTask,
+      active: PRIMARY_COLOR,
       completed: "#3b82f6",
       upcoming: "#f59e0b",
       "on-hold": "#ef4444",
@@ -552,7 +550,6 @@ export default function DashboardPage() {
     setSelectedSprint(sprint);
     setSelectedSprintTask(null);
   };
-
 
   const handleBackToProjects = () => {
     setSelectedProject(null);
@@ -738,7 +735,7 @@ export default function DashboardPage() {
                   "0%, 100%": { borderColor: isDark ? "#1a2744" : "#e2e8f0" },
                   "50%": { borderColor: alpha(PRIMARY_COLOR, 0.2) },
                 },
-                minWidth: isMobile ? "800px" : "auto",
+                minWidth: isMobile ? "600px" : "auto",
               }}
             >
               <Table size={isMobile ? "small" : "medium"}>
@@ -752,28 +749,32 @@ export default function DashboardPage() {
                       },
                     }}
                   >
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Taskname
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      TaskDescription
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    {!isMobile && (
+                      <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                        TaskDescription
+                      </TableCell>
+                    )}
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Owner
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Is Unplanned
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    {!isMobile && (
+                      <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                        Is Unplanned
+                      </TableCell>
+                    )}
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Actual SP
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Estimated SP
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                      Est. SP
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Priority
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Status
                     </TableCell>
                   </TableRow>
@@ -800,21 +801,20 @@ export default function DashboardPage() {
                         },
                       }}
                     >
-                      {/* Taskname Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.title}
                         </Typography>
                       </TableCell>
 
-                      {/* TaskDescription Column */}
-                      <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 11 : 13, color: isDark ? "#9ca3af" : "#475569" }}>
-                          {entry.description}
-                        </Typography>
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ py: 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                          <Typography sx={{ fontSize: 13, color: isDark ? "#9ca3af" : "#475569" }}>
+                            {entry.description}
+                          </Typography>
+                        </TableCell>
+                      )}
 
-                      {/* Owner Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.owner}
@@ -822,7 +822,7 @@ export default function DashboardPage() {
                           sx={{
                             bgcolor: isDark ? "#1a2744" : "#e2e8f0",
                             color: isDark ? "#ffffff" : "#0f172a",
-                            fontSize: isMobile ? 10 : 12,
+                            fontSize: isMobile ? 9 : 12,
                             transition: "all 0.3s ease",
                             "&:hover": {
                               transform: "scale(1.1)",
@@ -833,35 +833,33 @@ export default function DashboardPage() {
                         />
                       </TableCell>
 
-                      {/* Is Unplanned Column */}
-                      <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Chip
-                          label={entry.isUnplanned}
-                          size="small"
-                          sx={{
-                            bgcolor: entry.isUnplanned === "Yes" ? "#ef444420" : "#22c55e20",
-                            color: entry.isUnplanned === "Yes" ? "#ef4444" : "#22c55e",
-                            fontWeight: 600,
-                            fontSize: isMobile ? 9 : 11,
-                          }}
-                        />
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ py: 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                          <Chip
+                            label={entry.isUnplanned}
+                            size="small"
+                            sx={{
+                              bgcolor: entry.isUnplanned === "Yes" ? "#ef444420" : "#22c55e20",
+                              color: entry.isUnplanned === "Yes" ? "#ef4444" : "#22c55e",
+                              fontWeight: 600,
+                              fontSize: 11,
+                            }}
+                          />
+                        </TableCell>
+                      )}
 
-                      {/* Actual SP Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.actualSP}
                         </Typography>
                       </TableCell>
 
-                      {/* Estimated SP Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.estimatedSP}
                         </Typography>
                       </TableCell>
 
-                      {/* Priority Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.priority}
@@ -870,7 +868,7 @@ export default function DashboardPage() {
                             bgcolor: getPriorityColor(entry.priority) + "20",
                             color: getPriorityColor(entry.priority),
                             fontWeight: 600,
-                            fontSize: isMobile ? 8 : 10,
+                            fontSize: isMobile ? 7 : 10,
                             textTransform: "uppercase",
                             transition: "all 0.3s ease",
                             "&:hover": {
@@ -880,7 +878,6 @@ export default function DashboardPage() {
                         />
                       </TableCell>
 
-                      {/* Status Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.status}
@@ -888,7 +885,7 @@ export default function DashboardPage() {
                           sx={{
                             bgcolor: getStatusColor(entry.status) + "20",
                             color: getStatusColor(entry.status),
-                            fontSize: isMobile ? 8 : 10,
+                            fontSize: isMobile ? 7 : 10,
                             textTransform: "uppercase",
                             transition: "all 0.3s ease",
                             "&:hover": {
@@ -1062,7 +1059,7 @@ export default function DashboardPage() {
                   "0%, 100%": { borderColor: isDark ? "#1a2744" : "#e2e8f0" },
                   "50%": { borderColor: alpha(PRIMARY_COLOR, 0.2) },
                 },
-                minWidth: isMobile ? "900px" : "auto",
+                minWidth: isMobile ? "700px" : "auto",
               }}
             >
               <Table size={isMobile ? "small" : "medium"}>
@@ -1076,33 +1073,39 @@ export default function DashboardPage() {
                       },
                     }}
                   >
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Bug Name
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Bug Description
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    {!isMobile && (
+                      <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                        Bug Description
+                      </TableCell>
+                    )}
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Owner
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Is Unplanned
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    {!isMobile && (
+                      <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                        Is Unplanned
+                      </TableCell>
+                    )}
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Actual SP
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Estimated SP
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                      Est. SP
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Priority
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Status
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Time Until Resolution
-                    </TableCell>
+                    {!isMobile && (
+                      <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                        Time Until Resolution
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1127,21 +1130,20 @@ export default function DashboardPage() {
                         },
                       }}
                     >
-                      {/* Bug Name Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.title}
                         </Typography>
                       </TableCell>
 
-                      {/* Bug Description Column */}
-                      <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 11 : 13, color: isDark ? "#9ca3af" : "#475569" }}>
-                          {entry.description}
-                        </Typography>
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ py: 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                          <Typography sx={{ fontSize: 13, color: isDark ? "#9ca3af" : "#475569" }}>
+                            {entry.description}
+                          </Typography>
+                        </TableCell>
+                      )}
 
-                      {/* Owner Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.owner}
@@ -1149,7 +1151,7 @@ export default function DashboardPage() {
                           sx={{
                             bgcolor: isDark ? "#1a2744" : "#e2e8f0",
                             color: isDark ? "#ffffff" : "#0f172a",
-                            fontSize: isMobile ? 10 : 12,
+                            fontSize: isMobile ? 9 : 12,
                             transition: "all 0.3s ease",
                             "&:hover": {
                               transform: "scale(1.1)",
@@ -1160,35 +1162,33 @@ export default function DashboardPage() {
                         />
                       </TableCell>
 
-                      {/* Is Unplanned Column */}
-                      <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Chip
-                          label={entry.isUnplanned}
-                          size="small"
-                          sx={{
-                            bgcolor: entry.isUnplanned === "Yes" ? "#ef444420" : "#22c55e20",
-                            color: entry.isUnplanned === "Yes" ? "#ef4444" : "#22c55e",
-                            fontWeight: 600,
-                            fontSize: isMobile ? 9 : 11,
-                          }}
-                        />
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ py: 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                          <Chip
+                            label={entry.isUnplanned}
+                            size="small"
+                            sx={{
+                              bgcolor: entry.isUnplanned === "Yes" ? "#ef444420" : "#22c55e20",
+                              color: entry.isUnplanned === "Yes" ? "#ef4444" : "#22c55e",
+                              fontWeight: 600,
+                              fontSize: 11,
+                            }}
+                          />
+                        </TableCell>
+                      )}
 
-                      {/* Actual SP Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.actualSP}
                         </Typography>
                       </TableCell>
 
-                      {/* Estimated SP Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                        <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                           {entry.estimatedSP}
                         </Typography>
                       </TableCell>
 
-                      {/* Priority Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.priority}
@@ -1197,7 +1197,7 @@ export default function DashboardPage() {
                             bgcolor: getPriorityColor(entry.priority) + "20",
                             color: getPriorityColor(entry.priority),
                             fontWeight: 600,
-                            fontSize: isMobile ? 8 : 10,
+                            fontSize: isMobile ? 7 : 10,
                             textTransform: "uppercase",
                             transition: "all 0.3s ease",
                             "&:hover": {
@@ -1207,7 +1207,6 @@ export default function DashboardPage() {
                         />
                       </TableCell>
 
-                      {/* Status Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Chip
                           label={entry.status}
@@ -1215,7 +1214,7 @@ export default function DashboardPage() {
                           sx={{
                             bgcolor: getStatusColor(entry.status) + "20",
                             color: getStatusColor(entry.status),
-                            fontSize: isMobile ? 8 : 10,
+                            fontSize: isMobile ? 7 : 10,
                             textTransform: "uppercase",
                             transition: "all 0.3s ease",
                             "&:hover": {
@@ -1225,20 +1224,21 @@ export default function DashboardPage() {
                         />
                       </TableCell>
 
-                      {/* Time Until Resolution Column */}
-                      <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <Icon icon="lucide:clock" style={{ fontSize: isMobile ? 14 : 16, color: isDark ? "#9ca3af" : "#475569" }} />
-                          <Typography sx={{ 
-                            fontSize: isMobile ? 11 : 13, 
-                            fontWeight: 600, 
-                            color: isDark ? "#ffffff" : "#0f172a",
-                            fontFamily: "monospace",
-                          }}>
-                            {entry.timeUntilResolution}
-                          </Typography>
-                        </Stack>
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ py: 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Icon icon="lucide:clock" style={{ fontSize: 16, color: isDark ? "#9ca3af" : "#475569" }} />
+                            <Typography sx={{ 
+                              fontSize: 13, 
+                              fontWeight: 600, 
+                              color: isDark ? "#ffffff" : "#0f172a",
+                              fontFamily: "monospace",
+                            }}>
+                              {entry.timeUntilResolution}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1388,9 +1388,9 @@ export default function DashboardPage() {
         {/* Board Columns - Kanban Style */}
         <Fade in timeout={700}>
           <Box sx={{ overflowX: "auto", pb: 2 }}>
-            <Grid container spacing={isMobile ? 1 : 2} sx={{ flexWrap: "nowrap", minWidth: isMobile ? "600px" : "auto" }}>
+            <Grid container spacing={isMobile ? 1 : 2} sx={{ flexWrap: "nowrap", minWidth: isMobile ? "500px" : "auto" }}>
               {columns.map((column, colIndex) => (
-                <Grid item xs={12} sm={6} md={3} key={column.status} sx={{ minWidth: isMobile ? 200 : 280 }}>
+                <Grid item xs={12} sm={6} md={3} key={column.status} sx={{ minWidth: isMobile ? 180 : 280 }}>
                   <Slide in timeout={600 + colIndex * 100} direction="up">
                     <Paper
                       elevation={0}
@@ -1401,7 +1401,7 @@ export default function DashboardPage() {
                         borderColor: isDark ? "#1a2744" : "#e2e8f0",
                         bgcolor: isDark ? "rgba(255,255,255,0.02)" : "#f8fafc",
                         height: "100%",
-                        minHeight: 300,
+                        minHeight: 250,
                         transition: "all 0.3s ease",
                         "&:hover": {
                           borderColor: column.color,
@@ -1430,7 +1430,7 @@ export default function DashboardPage() {
                           />
                           <Typography
                             sx={{
-                              fontSize: isMobile ? 12 : 14,
+                              fontSize: isMobile ? 11 : 14,
                               fontWeight: 700,
                               color: isDark ? "#ffffff" : "#0f172a",
                             }}
@@ -1465,13 +1465,13 @@ export default function DashboardPage() {
                               borderColor: isDark ? "#1a2744" : "#e2e8f0",
                               borderRadius: 2,
                               color: isDark ? "#6b7280" : "#94a3b8",
-                              fontSize: isMobile ? 11 : 13,
+                              fontSize: isMobile ? 10 : 13,
                             }}
                           >
                             No tasks
                           </Box>
                         ) : (
-                          column.tasks.map((task, taskIndex) => (
+                          column.tasks.slice(0, isMobile ? 3 : 5).map((task, taskIndex) => (
                             <Grow key={task.id} in timeout={800 + colIndex * 100 + taskIndex * 50}>
                               <Card
                                 elevation={0}
@@ -1496,7 +1496,7 @@ export default function DashboardPage() {
                               >
                                 <Typography
                                   sx={{
-                                    fontSize: isMobile ? 11 : 13,
+                                    fontSize: isMobile ? 10 : 13,
                                     fontWeight: 600,
                                     color: isDark ? "#ffffff" : "#0f172a",
                                     mb: 0.5,
@@ -1504,19 +1504,21 @@ export default function DashboardPage() {
                                 >
                                   {task.title}
                                 </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: isMobile ? 9 : 11,
-                                    color: isDark ? "#9ca3af" : "#475569",
-                                    mb: 1,
-                                    display: "-webkit-box",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {task.description}
-                                </Typography>
+                                {!isMobile && (
+                                  <Typography
+                                    sx={{
+                                      fontSize: 11,
+                                      color: isDark ? "#9ca3af" : "#475569",
+                                      mb: 1,
+                                      display: "-webkit-box",
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: "vertical",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    {task.description}
+                                  </Typography>
+                                )}
                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                   <Chip
                                     label={task.priority}
@@ -1524,9 +1526,9 @@ export default function DashboardPage() {
                                     sx={{
                                       bgcolor: getPriorityColor(task.priority) + "20",
                                       color: getPriorityColor(task.priority),
-                                      fontSize: isMobile ? 7 : 9,
+                                      fontSize: isMobile ? 6 : 9,
                                       fontWeight: 600,
-                                      height: isMobile ? 18 : 22,
+                                      height: isMobile ? 16 : 22,
                                     }}
                                   />
                                   <Typography
@@ -1691,7 +1693,7 @@ export default function DashboardPage() {
                   "0%, 100%": { borderColor: isDark ? "#1a2744" : "#e2e8f0" },
                   "50%": { borderColor: alpha(PRIMARY_COLOR, 0.2) },
                 },
-                minWidth: isMobile ? "800px" : "auto",
+                minWidth: isMobile ? "700px" : "auto",
               }}
             >
               <Table size={isMobile ? "small" : "medium"}>
@@ -1705,37 +1707,41 @@ export default function DashboardPage() {
                       },
                     }}
                   >
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       TASK
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Owner
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Priority
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       Status
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Timeline
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Users
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      Type
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      DEVSTATUS
-                    </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                      DOCUMENT
-                    </TableCell>
+                    {!isMobile && (
+                      <>
+                        <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                          Timeline
+                        </TableCell>
+                        <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                          Users
+                        </TableCell>
+                        <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                          Type
+                        </TableCell>
+                        <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                          DEVSTATUS
+                        </TableCell>
+                        <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                          DOCUMENT
+                        </TableCell>
+                      </>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allTasks.map((task, index) => (
+                  {allTasks.slice(0, isMobile ? 5 : 10).map((task, index) => (
                     <>
                       <TableRow
                         key={task.id}
@@ -1760,7 +1766,7 @@ export default function DashboardPage() {
                         onClick={() => handleTaskClick(task)}
                       >
                         <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          <Typography sx={{ fontSize: isMobile ? 11 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                          <Typography sx={{ fontSize: isMobile ? 10 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                             {task.title}
                           </Typography>
                         </TableCell>
@@ -1771,7 +1777,7 @@ export default function DashboardPage() {
                             sx={{
                               bgcolor: isDark ? "#1a2744" : "#e2e8f0",
                               color: isDark ? "#ffffff" : "#0f172a",
-                              fontSize: isMobile ? 9 : 11,
+                              fontSize: isMobile ? 8 : 11,
                               transition: "all 0.3s ease",
                               "&:hover": {
                                 transform: "scale(1.1)",
@@ -1789,7 +1795,7 @@ export default function DashboardPage() {
                               bgcolor: getPriorityColor(task.priority) + "20",
                               color: getPriorityColor(task.priority),
                               fontWeight: 600,
-                              fontSize: isMobile ? 8 : 10,
+                              fontSize: isMobile ? 7 : 10,
                               textTransform: "uppercase",
                               transition: "all 0.3s ease",
                               "&:hover": {
@@ -1805,7 +1811,7 @@ export default function DashboardPage() {
                             sx={{
                               bgcolor: getStatusColor(task.status) + "20",
                               color: getStatusColor(task.status),
-                              fontSize: isMobile ? 8 : 10,
+                              fontSize: isMobile ? 7 : 10,
                               textTransform: "uppercase",
                               transition: "all 0.3s ease",
                               "&:hover": {
@@ -1814,84 +1820,88 @@ export default function DashboardPage() {
                             }}
                           />
                         </TableCell>
-                        <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
-                            {task.timeline || formatDate(new Date().toISOString())}
-                          </Typography>
-                        </TableCell>
-                        <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          <Stack direction="row" spacing={0.5}>
-                            {task.users.slice(0, isMobile ? 2 : 3).map((user, idx) => (
-                              <Zoom key={idx} in timeout={600 + idx * 100}>
-                                <Avatar
+                        {!isMobile && (
+                          <>
+                            <TableCell sx={{ py: 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                              <Typography sx={{ fontSize: 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                {task.timeline || formatDate(new Date().toISOString())}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                              <Stack direction="row" spacing={0.5}>
+                                {task.users.slice(0, isMobile ? 2 : 3).map((user, idx) => (
+                                  <Zoom key={idx} in timeout={600 + idx * 100}>
+                                    <Avatar
+                                      sx={{
+                                        width: 24,
+                                        height: 24,
+                                        bgcolor: idx % 2 === 0 ? PRIMARY_COLOR : "#22c55e",
+                                        fontSize: 10,
+                                        fontWeight: 600,
+                                        transition: "all 0.3s ease",
+                                        "&:hover": {
+                                          transform: "scale(1.3) rotate(10deg)",
+                                        },
+                                      }}
+                                    >
+                                      {user.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                  </Zoom>
+                                ))}
+                                {task.users.length > 3 && (
+                                  <Typography sx={{ fontSize: 10, color: isDark ? "#9ca3af" : "#475569" }}>
+                                    +{task.users.length - 3}
+                                  </Typography>
+                                )}
+                              </Stack>
+                            </TableCell>
+                            <TableCell sx={{ py: 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                              <Typography sx={{ fontSize: 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                {task.type}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                              <Chip
+                                label={task.devStatus}
+                                size="small"
+                                sx={{
+                                  bgcolor: getStatusColor(task.devStatus as any) + "20",
+                                  color: getStatusColor(task.devStatus as any),
+                                  fontSize: 10,
+                                  transition: "all 0.3s ease",
+                                  "&:hover": {
+                                    transform: "scale(1.1)",
+                                  },
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell sx={{ py: 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
+                              {task.document ? (
+                                <Button
+                                  size="small"
+                                  startIcon={<Icon icon="lucide:file" style={{ fontSize: 14 }} />}
                                   sx={{
-                                    width: isMobile ? 20 : 24,
-                                    height: isMobile ? 20 : 24,
-                                    bgcolor: idx % 2 === 0 ? PRIMARY_COLOR : "#22c55e",
-                                    fontSize: isMobile ? 8 : 10,
-                                    fontWeight: 600,
+                                    fontSize: 11,
+                                    color: PRIMARY_COLOR,
+                                    textTransform: "none",
                                     transition: "all 0.3s ease",
                                     "&:hover": {
-                                      transform: "scale(1.3) rotate(10deg)",
+                                      transform: "scale(1.1) translateY(-2px)",
+                                      color: PRIMARY_DARK,
+                                      backgroundColor: alpha(PRIMARY_COLOR, 0.1),
                                     },
                                   }}
                                 >
-                                  {user.charAt(0).toUpperCase()}
-                                </Avatar>
-                              </Zoom>
-                            ))}
-                            {task.users.length > (isMobile ? 2 : 3) && (
-                              <Typography sx={{ fontSize: isMobile ? 8 : 10, color: isDark ? "#9ca3af" : "#475569" }}>
-                                +{task.users.length - (isMobile ? 2 : 3)}
-                              </Typography>
-                            )}
-                          </Stack>
-                        </TableCell>
-                        <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
-                            {task.type}
-                          </Typography>
-                        </TableCell>
-                        <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          <Chip
-                            label={task.devStatus}
-                            size="small"
-                            sx={{
-                              bgcolor: getStatusColor(task.devStatus as any) + "20",
-                              color: getStatusColor(task.devStatus as any),
-                              fontSize: isMobile ? 8 : 10,
-                              transition: "all 0.3s ease",
-                              "&:hover": {
-                                transform: "scale(1.1)",
-                              },
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ py: isMobile ? 1 : 1.5, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
-                          {task.document ? (
-                            <Button
-                              size="small"
-                              startIcon={<Icon icon="lucide:file" style={{ fontSize: isMobile ? 12 : 14 }} />}
-                              sx={{
-                                fontSize: isMobile ? 9 : 11,
-                                color: PRIMARY_COLOR,
-                                textTransform: "none",
-                                transition: "all 0.3s ease",
-                                "&:hover": {
-                                  transform: "scale(1.1) translateY(-2px)",
-                                  color: PRIMARY_DARK,
-                                  backgroundColor: alpha(PRIMARY_COLOR, 0.1),
-                                },
-                              }}
-                            >
-                              View
-                            </Button>
-                          ) : (
-                            <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#6b7280" : "#94a3b8" }}>
-                              —
-                            </Typography>
-                          )}
-                        </TableCell>
+                                  View
+                                </Button>
+                              ) : (
+                                <Typography sx={{ fontSize: 12, color: isDark ? "#6b7280" : "#94a3b8" }}>
+                                  —
+                                </Typography>
+                              )}
+                            </TableCell>
+                          </>
+                        )}
                       </TableRow>
 
                       {/* Subtasks - Expanded View */}
@@ -1905,7 +1915,7 @@ export default function DashboardPage() {
                             },
                           }}
                         >
-                          <TableCell colSpan={9} sx={{ p: 0 }}>
+                          <TableCell colSpan={isMobile ? 4 : 9} sx={{ p: 0 }}>
                             <Box
                               sx={{
                                 p: isMobile ? 1 : 2,
@@ -1917,32 +1927,32 @@ export default function DashboardPage() {
                               {/* Subtasks Header */}
                               <Grid container spacing={1} sx={{ mb: 1 }}>
                                 <Grid item xs={isMobile ? 4 : 3}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
-                                      SUB TASK
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                    SUB TASK
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={isMobile ? 2 : 2}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
                                     Owner
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={isMobile ? 2 : 2}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
                                     Effort
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={isMobile ? 2 : 2}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
                                     Status
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={isMobile ? 2 : 2}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
                                     File
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={isMobile ? 2 : 2}>
-                                  <Typography sx={{ fontSize: isMobile ? 9 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
+                                  <Typography sx={{ fontSize: isMobile ? 8 : 11, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569" }}>
                                     DUE
                                   </Typography>
                                 </Grid>
@@ -1968,7 +1978,7 @@ export default function DashboardPage() {
                                   >
                                     <Grid item xs={isMobile ? 4 : 3}>
                                       <Stack direction="row" alignItems="center" spacing={1}>
-                                        <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#ffffff" : "#0f172a" }}>
+                                        <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#ffffff" : "#0f172a" }}>
                                           {subtask.title}
                                         </Typography>
                                         <Chip
@@ -1977,8 +1987,8 @@ export default function DashboardPage() {
                                           sx={{
                                             bgcolor: isDark ? "#1a2744" : "#e2e8f0",
                                             color: isDark ? "#9ca3af" : "#475569",
-                                            fontSize: isMobile ? 7 : 9,
-                                            height: isMobile ? 16 : 20,
+                                            fontSize: isMobile ? 6 : 9,
+                                            height: isMobile ? 14 : 20,
                                             transition: "all 0.3s ease",
                                             "&:hover": {
                                               transform: "scale(1.1)",
@@ -1988,12 +1998,12 @@ export default function DashboardPage() {
                                       </Stack>
                                     </Grid>
                                     <Grid item xs={isMobile ? 2 : 2}>
-                                      <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                      <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                                         {subtask.owner}
                                       </Typography>
                                     </Grid>
                                     <Grid item xs={isMobile ? 2 : 2}>
-                                      <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                      <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                                         {subtask.plannedEffort}
                                       </Typography>
                                     </Grid>
@@ -2004,7 +2014,7 @@ export default function DashboardPage() {
                                         sx={{
                                           bgcolor: getStatusColor(subtask.status) + "20",
                                           color: getStatusColor(subtask.status),
-                                          fontSize: isMobile ? 7 : 10,
+                                          fontSize: isMobile ? 6 : 10,
                                           transition: "all 0.3s ease",
                                           "&:hover": {
                                             transform: "scale(1.1)",
@@ -2013,12 +2023,12 @@ export default function DashboardPage() {
                                       />
                                     </Grid>
                                     <Grid item xs={isMobile ? 2 : 2}>
-                                      <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                      <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                                         {subtask.file || "—"}
                                       </Typography>
                                     </Grid>
                                     <Grid item xs={isMobile ? 2 : 2}>
-                                      <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                                      <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                                         {subtask.dueDate}
                                       </Typography>
                                     </Grid>
@@ -2050,7 +2060,6 @@ export default function DashboardPage() {
     const sprint = selectedSprint;
 
     // Get 3 sprints for display (or fewer if not available)
-    // Since we only have one selected sprint, we'll create 3 entries based on it
     const sprintEntries = [
       { 
         name: sprint.name, 
@@ -2183,7 +2192,7 @@ export default function DashboardPage() {
                   "0%, 100%": { borderColor: isDark ? "#1a2744" : "#e2e8f0" },
                   "50%": { borderColor: alpha(PRIMARY_COLOR, 0.2) },
                 },
-                minWidth: isMobile ? "600px" : "auto",
+                minWidth: isMobile ? "400px" : "auto",
               }}
             >
               <Table size={isMobile ? "small" : "medium"}>
@@ -2197,13 +2206,13 @@ export default function DashboardPage() {
                       },
                     }}
                   >
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       SPRINT
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       GOALS
                     </TableCell>
-                    <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                    <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                       SPRINT TIMELINE
                     </TableCell>
                   </TableRow>
@@ -2230,24 +2239,22 @@ export default function DashboardPage() {
                         },
                       }}
                     >
-                      {/* SPRINT Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Box>
-                          <Typography sx={{ fontSize: isMobile ? 13 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                          <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                             {entry.name}
                           </Typography>
                         </Box>
                       </TableCell>
 
-                      {/* GOALS Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         {entry.goals && entry.goals.length > 0 ? (
                           <Box>
-                            {entry.goals.map((goal, goalIndex) => (
+                            {entry.goals.slice(0, isMobile ? 1 : 3).map((goal, goalIndex) => (
                               <Typography 
                                 key={goalIndex}
                                 sx={{ 
-                                  fontSize: isMobile ? 12 : 13, 
+                                  fontSize: isMobile ? 11 : 13, 
                                   color: isDark ? "#ffffff" : "#0f172a",
                                   mb: goalIndex < entry.goals.length - 1 ? 0.5 : 0,
                                   animation: `fadeInGoal 0.5s ease ${goalIndex * 0.1}s both`,
@@ -2260,21 +2267,25 @@ export default function DashboardPage() {
                                 {goal}
                               </Typography>
                             ))}
+                            {isMobile && entry.goals.length > 1 && (
+                              <Typography sx={{ fontSize: 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                                +{entry.goals.length - 1} more
+                              </Typography>
+                            )}
                           </Box>
                         ) : (
-                          <Typography sx={{ fontSize: isMobile ? 12 : 13, color: isDark ? "#9ca3af" : "#475569", fontStyle: "italic" }}>
+                          <Typography sx={{ fontSize: isMobile ? 11 : 13, color: isDark ? "#9ca3af" : "#475569", fontStyle: "italic" }}>
                             No goals defined
                           </Typography>
                         )}
                       </TableCell>
 
-                      {/* SPRINT TIMELINE Column */}
                       <TableCell sx={{ py: isMobile ? 1.5 : 2, borderColor: isDark ? "#1a2744" : "#e2e8f0" }}>
                         <Box>
-                          <Typography sx={{ fontSize: isMobile ? 12 : 13, color: isDark ? "#ffffff" : "#0f172a" }}>
+                          <Typography sx={{ fontSize: isMobile ? 11 : 13, color: isDark ? "#ffffff" : "#0f172a" }}>
                             {formatDate(entry.startDate)} - {formatDate(entry.endDate)}
                           </Typography>
-                          <Typography sx={{ fontSize: isMobile ? 11 : 12, color: isDark ? "#9ca3af" : "#475569", mt: 0.5 }}>
+                          <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569", mt: 0.5 }}>
                             {Math.ceil((new Date(entry.endDate).getTime() - new Date(entry.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
                           </Typography>
                         </Box>
@@ -2310,7 +2321,7 @@ export default function DashboardPage() {
                 "0%, 100%": { borderColor: isDark ? "#1a2744" : "#e2e8f0" },
                 "50%": { borderColor: alpha(PRIMARY_COLOR, 0.15) },
               },
-              minWidth: isMobile ? "700px" : "auto",
+              minWidth: isMobile ? "600px" : "auto",
             }}
           >
             <Table size={isMobile ? "small" : "medium"}>
@@ -2324,25 +2335,27 @@ export default function DashboardPage() {
                     },
                   }}
                 >
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     User
                   </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
-                    Email
-                  </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  {!isMobile && (
+                    <TableCell sx={{ fontSize: 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                      Email
+                    </TableCell>
+                  )}
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     Organization
                   </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     Role
                   </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     Projects
                   </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     Bugs
                   </TableCell>
-                  <TableCell sx={{ fontSize: isMobile ? 10 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
+                  <TableCell sx={{ fontSize: isMobile ? 9 : 12, fontWeight: 600, color: isDark ? "#9ca3af" : "#475569", py: 1.5 }}>
                     Action
                   </TableCell>
                 </TableRow>
@@ -2387,7 +2400,7 @@ export default function DashboardPage() {
                                 width: isMobile ? 28 : 36,
                                 height: isMobile ? 28 : 36,
                                 bgcolor: user.avatar,
-                                fontSize: isMobile ? 11 : 14,
+                                fontSize: isMobile ? 10 : 14,
                                 fontWeight: 600,
                                 transition: "all 0.3s ease",
                                 "&:hover": {
@@ -2399,15 +2412,22 @@ export default function DashboardPage() {
                             </Avatar>
                           </Zoom>
                           <Box>
-                            <Typography sx={{ fontSize: isMobile ? 11 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                            <Typography sx={{ fontSize: isMobile ? 10 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                               {user.username}
                             </Typography>
+                            {isMobile && (
+                              <Typography sx={{ fontSize: 9, color: isDark ? "#9ca3af" : "#475569" }}>
+                                {user.email}
+                              </Typography>
+                            )}
                           </Box>
                         </Stack>
                       </TableCell>
-                      <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", color: isDark ? "#9ca3af" : "#475569", fontSize: isMobile ? 11 : 13, py: isMobile ? 1 : 1.5 }}>
-                        {user.email}
-                      </TableCell>
+                      {!isMobile && (
+                        <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", color: isDark ? "#9ca3af" : "#475569", fontSize: 13, py: 1.5 }}>
+                          {user.email}
+                        </TableCell>
+                      )}
                       <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", py: isMobile ? 1 : 1.5 }}>
                         <Chip
                           label={user.organization}
@@ -2416,7 +2436,7 @@ export default function DashboardPage() {
                             bgcolor: isDark ? "#1a2744" : "#e2e8f0",
                             color: isDark ? "#ffffff" : "#0f172a",
                             fontWeight: 500,
-                            fontSize: isMobile ? 9 : 11,
+                            fontSize: isMobile ? 8 : 11,
                             animation: "pulse 2s ease-in-out infinite",
                             "@keyframes pulse": {
                               "0%, 100%": { transform: "scale(1)" },
@@ -2427,29 +2447,29 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", py: isMobile ? 1 : 1.5 }}>
                         <Chip
-                          icon={<Icon icon={getRoleIcon(user.role)} style={{ fontSize: isMobile ? 11 : 14 }} />}
+                          icon={<Icon icon={getRoleIcon(user.role)} style={{ fontSize: isMobile ? 10 : 14 }} />}
                           label={user.role}
                           size="small"
                           sx={{
                             bgcolor: getRoleColor(user.role) + "20",
                             color: getRoleColor(user.role),
                             fontWeight: 600,
-                            fontSize: isMobile ? 9 : 11,
+                            fontSize: isMobile ? 8 : 11,
                             "& .MuiChip-icon": {
                               color: getRoleColor(user.role),
                             },
                           }}
                         />
                       </TableCell>
-                      <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", color: isDark ? "#ffffff" : "#0f172a", fontWeight: 600, fontSize: isMobile ? 12 : 14, py: isMobile ? 1 : 1.5 }}>
+                      <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", color: isDark ? "#ffffff" : "#0f172a", fontWeight: 600, fontSize: isMobile ? 11 : 14, py: isMobile ? 1 : 1.5 }}>
                         {totalProjects}
                       </TableCell>
                       <TableCell sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0", py: isMobile ? 1 : 1.5 }}>
                         <Stack direction="row" spacing={1} alignItems="center">
-                          <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: 600, fontSize: isMobile ? 12 : 14 }}>
+                          <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: 600, fontSize: isMobile ? 11 : 14 }}>
                             {openBugs}
                           </Typography>
-                          <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                          <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                             / {totalBugs}
                           </Typography>
                         </Stack>
@@ -2465,7 +2485,7 @@ export default function DashboardPage() {
                           sx={{
                             borderRadius: 2,
                             textTransform: "none",
-                            fontSize: isMobile ? 10 : 12,
+                            fontSize: isMobile ? 9 : 12,
                             bgcolor: PRIMARY_COLOR,
                             transition: "all 0.3s ease",
                             animation: "bounceIn 0.6s ease",
@@ -2481,7 +2501,7 @@ export default function DashboardPage() {
                             },
                           }}
                         >
-                          View Details
+                          {isMobile ? "View" : "View Details"}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -2542,7 +2562,7 @@ export default function DashboardPage() {
     // Projects View - Professional Hover Effects with Enhanced Animations
     const renderProjects = () => (
       <Grid container spacing={isMobile ? 1 : 2}>
-        {projects.map((project, index) => (
+        {projects.slice(0, isMobile ? 6 : 9).map((project, index) => (
           <Grid item xs={12} sm={6} lg={4} key={project.id}>
             <Grow in timeout={800 + index * 100}>
               <Card
@@ -2596,10 +2616,10 @@ export default function DashboardPage() {
               >
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
                   <Box>
-                    <Typography sx={{ fontSize: isMobile ? 14 : 16, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a" }}>
+                    <Typography sx={{ fontSize: isMobile ? 13 : 16, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a" }}>
                       {project.name}
                     </Typography>
-                    <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569", mt: 0.5 }}>
+                    <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569", mt: 0.5 }}>
                       {project.description}
                     </Typography>
                   </Box>
@@ -2611,7 +2631,7 @@ export default function DashboardPage() {
                         bgcolor: getStatusColor(project.status) + "20",
                         color: getStatusColor(project.status),
                         fontWeight: 600,
-                        fontSize: isMobile ? 8 : 10,
+                        fontSize: isMobile ? 7 : 10,
                         textTransform: "uppercase",
                       }}
                     />
@@ -2619,20 +2639,20 @@ export default function DashboardPage() {
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Icon icon="lucide:git-branch" style={{ fontSize: isMobile ? 12 : 14, color: isDark ? "#6b7280" : "#94a3b8" }} />
-                    <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Icon icon="lucide:git-branch" style={{ fontSize: isMobile ? 10 : 14, color: isDark ? "#6b7280" : "#94a3b8" }} />
+                    <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                       {project.sprints.length} sprints
                     </Typography>
                     <Box sx={{ width: 4, height: 4, borderRadius: "50%", bgcolor: isDark ? "#1a2744" : "#e2e8f0" }} />
-                    <Icon icon="lucide:bug" style={{ fontSize: isMobile ? 12 : 14, color: isDark ? "#6b7280" : "#94a3b8" }} />
-                    <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Icon icon="lucide:bug" style={{ fontSize: isMobile ? 10 : 14, color: isDark ? "#6b7280" : "#94a3b8" }} />
+                    <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                       {project.bugs.filter(b => b.status === "open").length} bugs
                     </Typography>
                   </Stack>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <Box
                       sx={{
-                        width: isMobile ? 40 : 60,
+                        width: isMobile ? 30 : 60,
                         height: 4,
                         borderRadius: 2,
                         bgcolor: isDark ? "#1a2744" : "#e2e8f0",
@@ -2649,7 +2669,7 @@ export default function DashboardPage() {
                         }}
                       />
                     </Box>
-                    <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569", fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: isMobile ? 8 : 11, color: isDark ? "#9ca3af" : "#475569", fontWeight: 600 }}>
                       {project.progress}%
                     </Typography>
                   </Box>
@@ -2664,7 +2684,7 @@ export default function DashboardPage() {
     // Sprints View - Professional Hover Effects with Enhanced Animations
     const renderSprints = () => (
       <Box>
-        {projects.map((project, pIndex) => (
+        {projects.slice(0, isMobile ? 3 : 5).map((project, pIndex) => (
           <Box key={project.id} sx={{ mb: 3 }}>
             <Fade in timeout={600 + pIndex * 100}>
               <Typography sx={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: 600, mb: 1 }}>
@@ -2672,7 +2692,7 @@ export default function DashboardPage() {
               </Typography>
             </Fade>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {project.sprints.map((sprint, index) => (
+              {project.sprints.slice(0, isMobile ? 3 : 4).map((sprint, index) => (
                 <Grid item xs={12} sm={6} lg={4} key={sprint.id}>
                   <Fade in timeout={600 + pIndex * 100 + index * 80}>
                     <Card
@@ -2726,10 +2746,10 @@ export default function DashboardPage() {
                     >
                       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                         <Box>
-                          <Typography sx={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a" }}>
+                          <Typography sx={{ fontSize: isMobile ? 11 : 14, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a" }}>
                             {sprint.name}
                           </Typography>
-                          <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                          <Typography sx={{ fontSize: isMobile ? 8 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                             {formatDate(sprint.startDate)} - {formatDate(sprint.endDate)}
                           </Typography>
                         </Box>
@@ -2740,16 +2760,16 @@ export default function DashboardPage() {
                             bgcolor: getStatusColor(sprint.status) + "20",
                             color: getStatusColor(sprint.status),
                             fontWeight: 600,
-                            fontSize: isMobile ? 8 : 10,
+                            fontSize: isMobile ? 7 : 10,
                             textTransform: "uppercase",
                           }}
                         />
                       </Box>
                       <Box sx={{ mt: 1, display: "flex", justifyContent: "space-between" }}>
-                        <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                        <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                           {sprint.tasks.length} tasks
                         </Typography>
-                        <Typography sx={{ fontSize: isMobile ? 10 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
+                        <Typography sx={{ fontSize: isMobile ? 9 : 12, color: isDark ? "#9ca3af" : "#475569" }}>
                           {sprint.tasks.filter((t) => t.status === "done").length} done
                         </Typography>
                       </Box>
@@ -2767,7 +2787,7 @@ export default function DashboardPage() {
     const renderTasks = () => (
       <Grid container spacing={isMobile ? 1 : 2}>
         {projects.flatMap((project, pIndex) =>
-          project.tasks.slice(0, isMobile ? 4 : 6).map((task, index) => (
+          project.tasks.slice(0, isMobile ? 3 : 6).map((task, index) => (
             <Grid item xs={12} sm={6} lg={4} key={task.id}>
               <Slide in timeout={800 + pIndex * 100 + index * 80} direction="up">
                 <Card
@@ -2805,7 +2825,7 @@ export default function DashboardPage() {
                   onClick={() => handleTaskCardClick(task)}
                 >
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                    <Typography sx={{ fontSize: isMobile ? 11 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                    <Typography sx={{ fontSize: isMobile ? 10 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                       {task.title}
                     </Typography>
                     <Chip
@@ -2815,12 +2835,12 @@ export default function DashboardPage() {
                         bgcolor: getPriorityColor(task.priority) + "20",
                         color: getPriorityColor(task.priority),
                         fontWeight: 600,
-                        fontSize: isMobile ? 7 : 9,
+                        fontSize: isMobile ? 6 : 9,
                         textTransform: "uppercase",
                       }}
                     />
                   </Box>
-                  <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569", mb: 1 }}>
+                  <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569", mb: 1 }}>
                     {task.description}
                   </Typography>
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -2830,10 +2850,10 @@ export default function DashboardPage() {
                       sx={{
                         bgcolor: getStatusColor(task.status) + "20",
                         color: getStatusColor(task.status),
-                        fontSize: isMobile ? 8 : 10,
+                        fontSize: isMobile ? 7 : 10,
                       }}
                     />
-                    <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                       {task.assignee}
                     </Typography>
                   </Box>
@@ -2849,7 +2869,7 @@ export default function DashboardPage() {
     const renderBugs = () => (
       <Grid container spacing={isMobile ? 1 : 2}>
         {projects.flatMap((project, pIndex) =>
-          project.bugs.map((bug, index) => (
+          project.bugs.slice(0, isMobile ? 4 : 8).map((bug, index) => (
             <Grid item xs={12} sm={6} lg={4} key={bug.id}>
               <Slide in timeout={800 + pIndex * 100 + index * 80} direction="up">
                 <Card
@@ -2887,7 +2907,7 @@ export default function DashboardPage() {
                   onClick={() => handleBugCardClick(bug)}
                 >
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                    <Typography sx={{ fontSize: isMobile ? 11 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
+                    <Typography sx={{ fontSize: isMobile ? 10 : 13, fontWeight: 600, color: isDark ? "#ffffff" : "#0f172a" }}>
                       {bug.title}
                     </Typography>
                     <Chip
@@ -2897,12 +2917,12 @@ export default function DashboardPage() {
                         bgcolor: getPriorityColor(bug.severity) + "20",
                         color: getPriorityColor(bug.severity),
                         fontWeight: 600,
-                        fontSize: isMobile ? 7 : 9,
+                        fontSize: isMobile ? 6 : 9,
                         textTransform: "uppercase",
                       }}
                     />
                   </Box>
-                  <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569", mb: 1 }}>
+                  <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569", mb: 1 }}>
                     {bug.description}
                   </Typography>
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -2912,10 +2932,10 @@ export default function DashboardPage() {
                       sx={{
                         bgcolor: getStatusColor(bug.status) + "20",
                         color: getStatusColor(bug.status),
-                        fontSize: isMobile ? 8 : 10,
+                        fontSize: isMobile ? 7 : 10,
                       }}
                     />
-                    <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                       {bug.assignee}
                     </Typography>
                   </Box>
@@ -2951,7 +2971,7 @@ export default function DashboardPage() {
           {user.username}'s Project Boards
         </Typography>
         <Grid container spacing={isMobile ? 1 : 3}>
-          {projects.map((project, pIndex) => (
+          {projects.slice(0, isMobile ? 3 : 6).map((project, pIndex) => (
             <Grid item xs={12} lg={6} key={project.id}>
               <Slide in timeout={600 + pIndex * 150} direction="left">
                 <Card
@@ -2972,7 +2992,7 @@ export default function DashboardPage() {
                   }}
                   onClick={() => handleBoardClick(project)}
                 >
-                  <Typography sx={{ fontSize: isMobile ? 14 : 16, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a", mb: 2 }}>
+                  <Typography sx={{ fontSize: isMobile ? 13 : 16, fontWeight: 700, color: isDark ? "#ffffff" : "#0f172a", mb: 2 }}>
                     {project.name}
                   </Typography>
                   <Grid container spacing={1}>
@@ -3013,23 +3033,23 @@ export default function DashboardPage() {
                               <Icon 
                                 icon={statusIcons[status]} 
                                 style={{ 
-                                  fontSize: isMobile ? 12 : 14, 
+                                  fontSize: isMobile ? 10 : 14, 
                                   color: statusColors[status],
                                   marginBottom: 4
                                 }} 
                               />
                               <Typography
                                 sx={{
-                                  fontSize: isMobile ? 7 : 9,
+                                  fontSize: isMobile ? 6 : 9,
                                   color: isDark ? "#9ca3af" : "#475569",
                                   textTransform: "uppercase",
                                 }}
                               >
-                                {status}
+                                {isMobile ? status.slice(0, 3) : status}
                               </Typography>
                               <Typography
                                 sx={{
-                                  fontSize: isMobile ? 14 : 18,
+                                  fontSize: isMobile ? 12 : 18,
                                   fontWeight: 700,
                                   color: isDark ? "#ffffff" : "#0f172a",
                                 }}
@@ -3043,10 +3063,10 @@ export default function DashboardPage() {
                     })}
                   </Grid>
                   <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-                    <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                       Bugs: {project.bugs.filter((b) => b.status !== "closed").length} open
                     </Typography>
-                    <Typography sx={{ fontSize: isMobile ? 10 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                    <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                       Progress: {project.progress}%
                     </Typography>
                   </Box>
@@ -3188,7 +3208,7 @@ export default function DashboardPage() {
                         borderColor: isDark ? "#1a2744" : "#e2e8f0",
                         bgcolor: isDark ? "#0F1828" : "#ffffff",
                         textAlign: "center",
-                        minWidth: isMobile ? 60 : 90,
+                        minWidth: isMobile ? 50 : 90,
                         transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                         "&:hover": {
                           transform: "scale(1.15) translateY(-6px)",
@@ -3199,7 +3219,7 @@ export default function DashboardPage() {
                     >
                       <Typography
                         sx={{
-                          fontSize: isMobile ? 16 : 22,
+                          fontSize: isMobile ? 14 : 22,
                           fontWeight: 700,
                           color: stat.color,
                           animation: "countUp 1s cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -3211,7 +3231,7 @@ export default function DashboardPage() {
                       >
                         {stat.value}
                       </Typography>
-                      <Typography sx={{ fontSize: isMobile ? 9 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
+                      <Typography sx={{ fontSize: isMobile ? 8 : 11, color: isDark ? "#9ca3af" : "#475569" }}>
                         {stat.label}
                       </Typography>
                     </Card>
@@ -3269,14 +3289,14 @@ export default function DashboardPage() {
                           ? "bug"
                           : "layout-dashboard"
                       }`}
-                      style={{ fontSize: isMobile ? 14 : 16 }}
+                      style={{ fontSize: isMobile ? 12 : 16 }}
                     />
                   }
                   sx={{
                     px: isMobile ? 1 : 1.5,
                     py: isMobile ? 1 : 1.5,
                     borderRadius: 2,
-                    fontSize: isMobile ? 10 : 13,
+                    fontSize: isMobile ? 9 : 13,
                     fontWeight: 600,
                     bgcolor: view === item ? PRIMARY_COLOR : isDark ? "#0F1828" : "#ffffff",
                     color: view === item ? "#ffffff" : isDark ? "#9ca3af" : "#475569",
@@ -3336,243 +3356,245 @@ export default function DashboardPage() {
   // ============================================================================
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: isDark ? "#0F1828" : "#f8fafc",
-        p: isMobile ? 1 : 3,
-        position: "relative",
-        overflow: "hidden",
-        "&::before": {
-          content: '""',
-          position: "fixed",
-          top: -200,
-          right: -200,
-          width: 400,
-          height: 400,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${alpha(PRIMARY_COLOR, 0.03)}, transparent 70%)`,
-          animation: "bgFloatBig 20s ease-in-out infinite",
-          "@keyframes bgFloatBig": {
-            "0%, 100%": { transform: "translate(0, 0) scale(1)" },
-            "33%": { transform: "translate(-50px, -30px) scale(1.2)" },
-            "66%": { transform: "translate(50px, 20px) scale(0.8)" },
+    <Container maxWidth="xl" disableGutters>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          bgcolor: isDark ? "#0F1828" : "#f8fafc",
+          p: isMobile ? 1 : 3,
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "fixed",
+            top: -200,
+            right: -200,
+            width: 400,
+            height: 400,
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${alpha(PRIMARY_COLOR, 0.03)}, transparent 70%)`,
+            animation: "bgFloatBig 20s ease-in-out infinite",
+            "@keyframes bgFloatBig": {
+              "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+              "33%": { transform: "translate(-50px, -30px) scale(1.2)" },
+              "66%": { transform: "translate(50px, 20px) scale(0.8)" },
+            },
           },
-        },
-        "&::after": {
-          content: '""',
-          position: "fixed",
-          bottom: -200,
-          left: -200,
-          width: 400,
-          height: 400,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${alpha(PRIMARY_COLOR, 0.02)}, transparent 70%)`,
-          animation: "bgFloatBigReverse 25s ease-in-out infinite",
-          "@keyframes bgFloatBigReverse": {
-            "0%, 100%": { transform: "translate(0, 0) scale(1)" },
-            "33%": { transform: "translate(50px, 30px) scale(1.3)" },
-            "66%": { transform: "translate(-50px, -20px) scale(0.7)" },
+          "&::after": {
+            content: '""',
+            position: "fixed",
+            bottom: -200,
+            left: -200,
+            width: 400,
+            height: 400,
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${alpha(PRIMARY_COLOR, 0.02)}, transparent 70%)`,
+            animation: "bgFloatBigReverse 25s ease-in-out infinite",
+            "@keyframes bgFloatBigReverse": {
+              "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+              "33%": { transform: "translate(50px, 30px) scale(1.3)" },
+              "66%": { transform: "translate(-50px, -20px) scale(0.7)" },
+            },
           },
-        },
-      }}
-    >
-      {/* Show Global View (Header + Search + Users Table) ONLY when no user is selected */}
-      {!selectedUser ? (
-        <>
-          {/* Header with Enhanced Animations */}
-          <Grow in timeout={600}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                justifyContent: "space-between",
-                alignItems: isMobile ? "flex-start" : "center",
-                mb: 3,
-                p: isMobile ? 2 : 3,
-                borderRadius: 3,
-                border: "1px solid",
-                borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                bgcolor: isDark ? "#0F1828" : "#ffffff",
-                position: "relative",
-                overflow: "hidden",
-                animation: "slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulse 3s ease-in-out infinite",
-                "@keyframes slideDown": {
-                  "0%": { opacity: 0, transform: "translateY(-30px)" },
-                  "100%": { opacity: 1, transform: "translateY(0)" },
-                },
-                "@keyframes glowPulse": {
-                  "0%, 100%": { boxShadow: "0 0 0 rgba(24, 120, 178, 0)" },
-                  "50%": { boxShadow: `0 0 30px ${alpha(PRIMARY_COLOR, 0.06)}` },
-                },
-              }}
-            >
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <Zoom in timeout={800}>
-                  <Box
-                    sx={{
-                      width: isMobile ? 40 : 48,
-                      height: isMobile ? 40 : 48,
-                      borderRadius: 2,
-                      bgcolor: PRIMARY_COLOR,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      animation: "pulseIcon 2s ease-in-out infinite",
-                      "@keyframes pulseIcon": {
-                        "0%, 100%": { transform: "scale(1) rotate(0deg)" },
-                        "50%": { transform: "scale(1.1) rotate(5deg)" },
-                      },
-                    }}
-                  >
-                    <Icon icon="lucide:users" style={{ fontSize: isMobile ? 18 : 24, color: "#fff" }} />
+        }}
+      >
+        {/* Show Global View (Header + Search + Users Table) ONLY when no user is selected */}
+        {!selectedUser ? (
+          <>
+            {/* Header with Enhanced Animations */}
+            <Grow in timeout={600}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  justifyContent: "space-between",
+                  alignItems: isMobile ? "flex-start" : "center",
+                  mb: 3,
+                  p: isMobile ? 2 : 3,
+                  borderRadius: 3,
+                  border: "1px solid",
+                  borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                  bgcolor: isDark ? "#0F1828" : "#ffffff",
+                  position: "relative",
+                  overflow: "hidden",
+                  animation: "slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulse 3s ease-in-out infinite",
+                  "@keyframes slideDown": {
+                    "0%": { opacity: 0, transform: "translateY(-30px)" },
+                    "100%": { opacity: 1, transform: "translateY(0)" },
+                  },
+                  "@keyframes glowPulse": {
+                    "0%, 100%": { boxShadow: "0 0 0 rgba(24, 120, 178, 0)" },
+                    "50%": { boxShadow: `0 0 30px ${alpha(PRIMARY_COLOR, 0.06)}` },
+                  },
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Zoom in timeout={800}>
+                    <Box
+                      sx={{
+                        width: isMobile ? 40 : 48,
+                        height: isMobile ? 40 : 48,
+                        borderRadius: 2,
+                        bgcolor: PRIMARY_COLOR,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        animation: "pulseIcon 2s ease-in-out infinite",
+                        "@keyframes pulseIcon": {
+                          "0%, 100%": { transform: "scale(1) rotate(0deg)" },
+                          "50%": { transform: "scale(1.1) rotate(5deg)" },
+                        },
+                      }}
+                    >
+                      <Icon icon="lucide:users" style={{ fontSize: isMobile ? 18 : 24, color: "#fff" }} />
+                    </Box>
+                  </Zoom>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: isMobile ? 14 : 18,
+                        fontWeight: 700,
+                        color: isDark ? "#ffffff" : "#0f172a",
+                        background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${alpha(PRIMARY_COLOR, 0.6)}, ${PRIMARY_COLOR})`,
+                        backgroundSize: "200% auto",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        animation: "shimmerText 3s linear infinite",
+                        "@keyframes shimmerText": {
+                          "0%": { backgroundPosition: "200% center" },
+                          "100%": { backgroundPosition: "0% center" },
+                        },
+                      }}
+                    >
+                      Team Dashboard
+                    </Typography>
+                    <Typography sx={{ color: isDark ? "#9ca3af" : "#475569", fontSize: isMobile ? 11 : 13 }}>
+                      {users.length} team members • Click on any user to view details
+                    </Typography>
                   </Box>
-                </Zoom>
-                <Box>
-                  <Typography
-                    sx={{
-                      fontSize: isMobile ? 14 : 18,
-                      fontWeight: 700,
-                      color: isDark ? "#ffffff" : "#0f172a",
-                      background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${alpha(PRIMARY_COLOR, 0.6)}, ${PRIMARY_COLOR})`,
-                      backgroundSize: "200% auto",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      animation: "shimmerText 3s linear infinite",
-                      "@keyframes shimmerText": {
-                        "0%": { backgroundPosition: "200% center" },
-                        "100%": { backgroundPosition: "0% center" },
-                      },
-                    }}
-                  >
-                    Team Dashboard
-                  </Typography>
-                  <Typography sx={{ color: isDark ? "#9ca3af" : "#475569", fontSize: isMobile ? 11 : 13 }}>
-                    {users.length} team members • Click on any user to view details
-                  </Typography>
-                </Box>
-              </Stack>
-              <Chip
-                label={`${users.length} Users`}
-                sx={{
-                  bgcolor: isDark ? "#1a2744" : "#f1f5f9",
-                  color: isDark ? "#ffffff" : "#0f172a",
-                  fontWeight: 600,
-                  mt: isMobile ? 1 : 0,
-                  animation: "pulseChip 2s ease-in-out infinite",
-                  "@keyframes pulseChip": {
-                    "0%, 100%": { transform: "scale(1)" },
-                    "50%": { transform: "scale(1.03)" },
-                  },
-                }}
-              />
-            </Box>
-          </Grow>
-
-          {/* Search - Only in Global View with Enhanced Animations */}
-          <Fade in timeout={700}>
-            <Box sx={{ mb: 3 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder=" Search users by name, email, or organization..."
-                value={searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: "12px",
-                    bgcolor: isDark ? "#0F1828" : "#ffffff",
-                    transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    "& fieldset": {
-                      borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                      transition: "border-color 0.3s ease",
-                    },
-                    "&:hover": {
-                      transform: "scale(1.02)",
-                      "& fieldset": {
-                        borderColor: isDark ? "#2a3a5c" : "#94a3b8",
-                      },
-                    },
-                    "&.Mui-focused": {
-                      transform: "scale(1.03)",
-                      boxShadow: `0 12px 40px ${alpha(PRIMARY_COLOR, 0.15)}`,
-                      "& fieldset": {
-                        borderColor: PRIMARY_COLOR,
-                      },
-                    },
-                  },
-                  "& .MuiInputBase-input": {
-                    color: isDark ? "#ffffff" : "#0f172a",
-                    fontSize: isMobile ? 13 : 16,
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Icon
-                        icon="lucide:search"
-                        style={{
-                          fontSize: isMobile ? 14 : 17,
-                          color: isDark ? "#6b7280" : "#94a3b8",
-                        }}
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Fade>
-
-          {/* Users Table - Only in Global View with Enhanced Animations */}
-          <Box>
-            <Typography
-              sx={{
-                color: isDark ? "#ffffff" : "#0f172a",
-                fontSize: isMobile ? 14 : 16,
-                fontWeight: 600,
-                mb: 2,
-                animation: "fadeIn 0.8s ease-out",
-                "@keyframes fadeIn": {
-                  "0%": { opacity: 0 },
-                  "100%": { opacity: 1 },
-                },
-              }}
-            >
-              All Team Members
-            </Typography>
-            {filteredUsers.length === 0 ? (
-              <Zoom in timeout={600}>
-                <Card
-                  elevation={0}
+                </Stack>
+                <Chip
+                  label={`${users.length} Users`}
                   sx={{
-                    p: 4,
-                    textAlign: "center",
-                    border: "1px solid",
-                    borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                    borderRadius: 3,
-                    bgcolor: isDark ? "#0F1828" : "#ffffff",
-                    animation: "shake 0.5s ease",
-                    "@keyframes shake": {
-                      "0%, 100%": { transform: "translateX(0)" },
-                      "25%": { transform: "translateX(-10px)" },
-                      "75%": { transform: "translateX(10px)" },
+                    bgcolor: isDark ? "#1a2744" : "#f1f5f9",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    fontWeight: 600,
+                    mt: isMobile ? 1 : 0,
+                    animation: "pulseChip 2s ease-in-out infinite",
+                    "@keyframes pulseChip": {
+                      "0%, 100%": { transform: "scale(1)" },
+                      "50%": { transform: "scale(1.03)" },
                     },
                   }}
-                >
-                  <Typography sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
-                    No users found matching your search.
-                  </Typography>
-                </Card>
-              </Zoom>
-            ) : (
-              renderUserTable()
-            )}
-          </Box>
-        </>
-      ) : (
-        // User Detail View - Full Screen (No Header, No Search, No Team Members)
-        renderUserDetail()
-      )}
-    </Box>
+                />
+              </Box>
+            </Grow>
+
+            {/* Search - Only in Global View with Enhanced Animations */}
+            <Fade in timeout={700}>
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  fullWidth
+                  size={isMobile ? "small" : "medium"}
+                  placeholder={isMobile ? "Search users..." : "Search users by name, email, or organization..."}
+                  value={searchTerm}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      bgcolor: isDark ? "#0F1828" : "#ffffff",
+                      transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      "& fieldset": {
+                        borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                        transition: "border-color 0.3s ease",
+                      },
+                      "&:hover": {
+                        transform: "scale(1.02)",
+                        "& fieldset": {
+                          borderColor: isDark ? "#2a3a5c" : "#94a3b8",
+                        },
+                      },
+                      "&.Mui-focused": {
+                        transform: "scale(1.03)",
+                        boxShadow: `0 12px 40px ${alpha(PRIMARY_COLOR, 0.15)}`,
+                        "& fieldset": {
+                          borderColor: PRIMARY_COLOR,
+                        },
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      color: isDark ? "#ffffff" : "#0f172a",
+                      fontSize: isMobile ? 13 : 16,
+                    },
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Icon
+                          icon="lucide:search"
+                          style={{
+                            fontSize: isMobile ? 14 : 17,
+                            color: isDark ? "#6b7280" : "#94a3b8",
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            </Fade>
+
+            {/* Users Table - Only in Global View with Enhanced Animations */}
+            <Box>
+              <Typography
+                sx={{
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  fontSize: isMobile ? 14 : 16,
+                  fontWeight: 600,
+                  mb: 2,
+                  animation: "fadeIn 0.8s ease-out",
+                  "@keyframes fadeIn": {
+                    "0%": { opacity: 0 },
+                    "100%": { opacity: 1 },
+                  },
+                }}
+              >
+                All Team Members
+              </Typography>
+              {filteredUsers.length === 0 ? (
+                <Zoom in timeout={600}>
+                  <Card
+                    elevation={0}
+                    sx={{
+                      p: 4,
+                      textAlign: "center",
+                      border: "1px solid",
+                      borderColor: isDark ? "#1a2744" : "#e2e8f0",
+                      borderRadius: 3,
+                      bgcolor: isDark ? "#0F1828" : "#ffffff",
+                      animation: "shake 0.5s ease",
+                      "@keyframes shake": {
+                        "0%, 100%": { transform: "translateX(0)" },
+                        "25%": { transform: "translateX(-10px)" },
+                        "75%": { transform: "translateX(10px)" },
+                      },
+                    }}
+                  >
+                    <Typography sx={{ color: isDark ? "#9ca3af" : "#475569" }}>
+                      No users found matching your search.
+                    </Typography>
+                  </Card>
+                </Zoom>
+              ) : (
+                renderUserTable()
+              )}
+            </Box>
+          </>
+        ) : (
+          // User Detail View - Full Screen (No Header, No Search, No Team Members)
+          renderUserDetail()
+        )}
+      </Box>
+    </Container>
   );
 }
