@@ -45,6 +45,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { useTheme as useCustomTheme } from "../../context/ThemeContext";
+import MyEditor from '../Htmleditor/MyEditor';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -410,7 +411,12 @@ function ReplyDialog({
   const [replyText, setReplyText] = useState("");
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
+  const [content, setContent] = useState<string>('');
 
+  const handleChange = (newContent: string) => {
+    setContent(newContent);
+    console.log('Content updated:', newContent);
+  };
   const handleSubmit = () => {
     if (replyText.trim()) {
       onSubmit(replyText);
@@ -425,7 +431,7 @@ function ReplyDialog({
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="md" 
+      maxWidth="lg" 
       fullWidth
       TransitionComponent={Slide}
       TransitionProps={{ timeout: 400 }}
@@ -448,15 +454,15 @@ function ReplyDialog({
             <Avatar 
               sx={{ 
                 bgcolor: "primary.main",
-                animation: "spin-avatar 4s linear infinite, glow-avatar 2s ease-in-out infinite",
-                "@keyframes spin-avatar": {
-                  "0%": { transform: "rotate(0deg)" },
-                  "100%": { transform: "rotate(360deg)" },
-                },
-                "@keyframes glow-avatar": {
-                  "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
-                  "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
-                },
+                // animation: "spin-avatar 4s linear infinite, glow-avatar 2s ease-in-out infinite",
+                // "@keyframes spin-avatar": {
+                //   "0%": { transform: "rotate(0deg)" },
+                //   "100%": { transform: "rotate(360deg)" },
+                // },
+                // "@keyframes glow-avatar": {
+                //   "0%, 100%": { boxShadow: "0 0 10px rgba(99,102,241,0.3)" },
+                //   "50%": { boxShadow: "0 0 30px rgba(99,102,241,0.6)" },
+                // },
               }}
             >
               {feedback.userName.charAt(0)}
@@ -513,36 +519,14 @@ function ReplyDialog({
             {feedback.message}
           </Typography>
         </Paper>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          placeholder="Write your reply here..."
-          value={replyText}
-          onChange={(e) => setReplyText(e.target.value)}
-          variant="outlined"
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-              bgcolor: isDark ? "#0F1828" : "#ffffff",
-              transition: "all 0.4s ease",
-              "&:focus-within": {
-                transform: "scale(1.02)",
-                boxShadow: "0 8px 30px rgba(99,102,241,0.2)",
-              },
-              "& fieldset": {
-                borderColor: isDark ? "#1a2744" : "#e2e8f0",
-                transition: "border-color 0.3s ease",
-              },
-              "&:hover fieldset": {
-                borderColor: isDark ? "#2a3a5c" : "#94a3b8",
-              },
-            },
-            "& .MuiInputBase-input": {
-              color: isDark ? "#ffffff" : "#0f172a",
-            },
-          }}
-        />
+ <MyEditor
+        placeholder="Write your content here..."
+        height="400"
+        onChange={handleChange}
+        setContent={content}
+        defaultValue="<p>Initial content</p>"
+      />
+      
       </DialogContent>
       <DialogActions sx={{ p: 2, pt: 0 }}>
         <Button 
@@ -560,7 +544,7 @@ function ReplyDialog({
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={!replyText.trim()}
+        //  disabled={!replyText.trim()}
           endIcon={<Icon icon="lucide:send" />}
           sx={{
             borderRadius: 2,
@@ -600,7 +584,12 @@ function ViewFeedbackDialog({
   const [replyText, setReplyText] = useState("");
   const { theme } = useCustomTheme();
   const isDark = theme === "dark";
+const [content, setContent] = useState<string>('');
 
+  const handleChange = (newContent: string) => {
+    setContent(newContent);
+    console.log('Content updated:', newContent);
+  };
   const handleReply = () => {
     if (replyText.trim() && feedback) {
       onReply(feedback.id, replyText);
@@ -621,7 +610,7 @@ function ViewFeedbackDialog({
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="md" 
+      maxWidth="lg" 
       fullWidth
       TransitionComponent={Fade}
       TransitionProps={{ timeout: 500 }}
@@ -701,7 +690,7 @@ function ViewFeedbackDialog({
       </DialogTitle>
       <Divider sx={{ borderColor: isDark ? "#1a2744" : "#e2e8f0" }} />
       <DialogContent>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 4}}>
           <Typography variant="subtitle2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
             Message
           </Typography>
@@ -776,7 +765,14 @@ function ViewFeedbackDialog({
           <Typography variant="subtitle2" sx={{ color: isDark ? "#9ca3af" : "#475569" }} gutterBottom>
             Add Reply
           </Typography>
-          <TextField
+                <MyEditor
+        placeholder="Write your content here..."
+        height="400"
+        onChange={handleChange}
+        setContent={content}
+        defaultValue="<p>Initial content</p>"
+      />
+          {/* <TextField
             fullWidth
             multiline
             rows={2}
@@ -805,14 +801,14 @@ function ViewFeedbackDialog({
                 color: isDark ? "#ffffff" : "#0f172a",
               },
             }}
-          />
+          /> */}
           <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="contained"
               size="small"
               endIcon={<Icon icon="lucide:send" />}
               onClick={handleReply}
-              disabled={!replyText.trim()}
+          //    disabled={!replyText.trim()}
               sx={{
                 borderRadius: 2,
                 textTransform: "none",
