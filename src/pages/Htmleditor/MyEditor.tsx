@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import {  useRef } from 'react';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import type { SunEditorReactProps } from 'suneditor-react/dist/types/SunEditorReactProps';
